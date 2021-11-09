@@ -131,7 +131,9 @@ router.get('/midta/:location', (req,res)=>{
         res.send(mid_ta)
     })
 })
-
+// 단기예보조회
+// requset: lat: 경도, lng: 위도
+// response: 0~2일 후 최저기온, 최고기온, 기상상태, 강수확률 반환.
 router.get('/vilagefcst/:lat/:lng', (req,res)=>{
     let vilagefcst = [];
     let params = req.params;
@@ -170,12 +172,12 @@ router.get('/vilagefcst/:lat/:lng', (req,res)=>{
     if(dd<10){
         dd = '0' +dd;
     }
-    console.log(`${yyyy}${mm}${dd} ${hours}`)
+    hours = "02";
     var url = 'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst';
     var queryParams = '?' + encodeURIComponent('serviceKey') +`${service_key.mid_service_key}`; /* Service Key*/
     queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1'); /* */
     queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('1000'); /* */
-    queryParams += '&' + encodeURIComponent('dataType') + '=' + encodeURIComponent('JSON'); /* */
+    queryParams += '&' + encodeURIComponent('dataType') + '=' + encodeURIComponent('XML'); /* */
     queryParams += '&' + encodeURIComponent('base_date') + '=' + encodeURIComponent(`${yyyy}${mm}${dd}`); /* */
     queryParams += '&' + encodeURIComponent('base_time') + '=' + encodeURIComponent(`${hours}00`); /* */
     queryParams += '&' + encodeURIComponent('nx') + '=' + encodeURIComponent(`${nxy.x}`); /* */
@@ -190,11 +192,110 @@ router.get('/vilagefcst/:lat/:lng', (req,res)=>{
             console.log(error);
             res.send(error);
         }
-        res.send(body);
-        console.log(body);
+        let min,max,pop,sky,pty,i;
+        $ = cheerio.load(body);
+        for(i=0; i<3; i++){
+            day = parseInt(dd) + i;
+            pop_flag = 0;
+            sky_flag = 0;
+            pty_flag = 0;
+            fcst_flag = 0;
+            complete_flag = 0;
+            if(day<10){
+                day = '0'+day;
+            }
+            date = `${yyyy}${mm}${day}`;
+            $('item').each(function (idx){
+                let fcst_date = $(this).find('fcstDate').text();
+                let category =$(this).find('category').text();
+                let value =$(this).find('fcstValue').text();
+                if(fcst_date==date){
+                    if(category=="TMN"){
+                        console.log(`날짜: ${fcst_date} 최저기온: ${value}`);
+                        min = value;
+                        complete_flag++;
+                    }
+                    if(category=="TMX"){
+                        console.log(`날짜: ${fcst_date} 최고기온: ${value}`);
+                        max = value;
+                        complete_flag++;
+                    }
+                    if(category=="POP"&& pop_flag==0){
+                        console.log(`날짜: ${fcst_date} 강수확률 : ${value}`);
+                        pop = value;
+                        pop_flag++;
+                        complete_flag++;
+                    }
+                    if(category=="SKY"&& sky_flag==0){
+                        switch(parseInt(value)){
+                            case 1:
+                                sky = "맑음"
+                                break;
+                            case 3:
+                                sky = "구름많음"
+                                break;
+                            case 4:
+                                sky = "흐림"
+                                break;
+                        }
+                        console.log(`날짜: ${fcst_date} 하늘 상태: ${sky}`);
+                        sky_flag++;
+                        complete_flag++;
+                    }
+                    if(category=="PTY"&& pty_flag==0){
+                        switch(parseInt(value)){
+                            case 0:
+                                pty = 0;
+                            case 1:
+                                pty = "비"
+                                break;
+                            case 2:
+                                pty = "비/눈"
+                                break;
+                            case 3:
+                                pty = "눈"
+                                break;
+                            case 4:
+                                pty = "소나기"
+                                break;
+                        }
+                        console.log(`날짜: ${fcst_date} 강수 형태: ${pty}`);
+                        pty_flag++;
+                        complete_flag++;
+                    }
+                    if(fcst_flag==0&& complete_flag==5){
+                        if(pty == 0){
+                            console.log(`date: ${fcst_date} min: ${min} max: ${max} fcst: ${sky} rain: ${pop}`)
+                            vilagefcst[i] = {
+                                "date" : fcst_date, 
+                                "min" : min,
+                                "max" : max,
+                                "fcst" : sky,
+                                "rain" : pop
+                            }
+                        }
+                        else {
+                            console.log(`여기여기 date: ${fcst_date} min: ${min} max: ${max} fcst: ${pty} rain: ${pop}`)
+                            vilagefcst[i] = {
+                                "date" : fcst_date, 
+                                "min" : min,
+                                "max" : max,
+                                "fcst" : pty,
+                                "rain" : pop
+                            }
+                        }
+                        fcst_flag++;
+                    }
+                    
+                    
+                }
+            })
+        }
+        console.log(vilagefcst);
+        res.send(vilagefcst);
+        
+       
+        
     });
 })
-
-
-
 module.exports = router
