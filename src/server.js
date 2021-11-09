@@ -4,10 +4,11 @@ const morgan = require('morgan');
 
 const { sequelize } = require('./models');
 
+const weather_router = require('./routers/weather_router'); 
+const user_router = require('./routers/user_router'); 
 const app = express();
-const router = require('./routers/weather_router'); 
+
 const port = process.env.PORT || 3003;
-const body_parser = require('body-parser')
 
 sequelize.sync({ force: false })
   .then(() => {
@@ -22,7 +23,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use(router);
+app.use(weather_router);
+app.use(user_router);
 
 
 app.listen(port, () => {

@@ -1,20 +1,19 @@
 const express = require('express');
 const router = express.Router();
+
 const cheerio = require("cheerio");
 const request = require('request');
-const http = require('http');
 const service_key = require("../../weatherAPI.json");
 const land_fcst_location = require("../weather/mid_land_fcst_loctaion.json");
 const ta_location = require("../weather/mid_ta_location.json");
 const xy_converter = require("../weather/xy_converter");
 
+
+
 router.get('/', (req,res)=>{
     res.send('Server Open');
 });
 
-router.get('/user',(req,res)=>{
-    res.send('User @@')
-});
 // 중기육상예보조회  
 // request: location : 지역 이름
 // response:3~7일 후 오전/오후 기상상태, 강수확률 & 8~10일 후 기상상태, 강수확률 
