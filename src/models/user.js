@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-
+const db = require("./index")
 class User extends Sequelize.Model {
     static init(sequelize) {
         return super.init({
@@ -49,7 +49,12 @@ class User extends Sequelize.Model {
             collate: 'utf8_general_ci'
         });
     }
-    static associate(db) {}
+    static associate(db) {
+        db.User.hasMany(db.Coupon, {
+            foreignKey: "user_id",
+            onDelete: "cascade"
+        })
+    }
 };
 
 module.exports = User;
