@@ -13,7 +13,7 @@ class Account extends Sequelize.Model {
                 unique: true
             },
             account_image: {
-                type: Sequelize.STRING(45),
+                type: Sequelize.STRING(100),
                 allowNull: true
             }
         },  {

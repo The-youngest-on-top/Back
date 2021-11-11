@@ -6,7 +6,7 @@ const multer = require('multer');
 router.use(express.json());
 router.use(express.urlencoded({ extended: false }));
 
-const storage = multer.diskStorage({
+const account_storage = multer.diskStorage({
     // 업로드된 파일명과 서버의 파일명을 동일하게 세팅
     destination(req, file, cb){
         cb(null, 'images/account_images');
@@ -18,7 +18,7 @@ const storage = multer.diskStorage({
 const upload = multer({ 
     dest: 'images/account_images/', // 이미지 업로드 (파일명 암호화)
 });
-const upload_with_original_file_name= multer({storage: storage});  // 이미지 업로드 (파일명 동일)
+const upload_with_original_file_name= multer({storage: account_storage});  // 이미지 업로드 (파일명 동일)
 
 router.post('/account', upload_with_original_file_name.single('account_image'), async (req,res)=>{
     let {account_owner, account_number} = req.body;
