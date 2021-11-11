@@ -5,6 +5,7 @@ const Sequelize = require('sequelize');
 const User = require('./user');
 const Account = require('./account');
 const Coupon = require('./coupon');
+const Company = require('./company');
 
 const env = process.env.NODE_ENV || 'development';
 const config = require('../config/config')[env];
@@ -16,13 +17,16 @@ db.sequelize = sequelize;
 db.User = User;
 db.Account = Account;
 db.Coupon = Coupon;
+db.Company = Company;
 
 User.init(sequelize);
 Account.init(sequelize);
 Coupon.init(sequelize);
+Company.init(sequelize);
 
 User.associate(db);
 Account.associate(db);
 Coupon.associate(db);
+Company.associate(db);
 
 module.exports = db;

@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const User  = require('../models/user');
 const multer = require('multer');
-const fs = require('fs');
 const path = require('path');
 
 router.use(express.json());
