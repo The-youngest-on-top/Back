@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Account  = require('../models/account');
 const multer = require('multer');
+const path = require('path');
 
 router.use(express.json());
 router.use(express.urlencoded({ extended: false }));
@@ -32,8 +33,17 @@ router.post('/account', upload_with_original_file_name.single('account_image'), 
     res.send(`소유주: ${account_owner} 계좌번호: ${account_number} 파일: ${account_image}`);
 })
 
-router.get('/account', (req,res)=>{
-    
+router.get('/account/account_image', async (req,res)=>{
+    let id = req.body.id;
+    let project_path = path.resolve("./");
+    let account_data= await Account.findOne({
+        attributes:['account_image'],
+        where:{
+            "id": id
+        }
+    })
+    console.log(`${project_path}/${account_data.account_image}`);
+    res.sendFile(`${project_path}/${account_data.account_image}`);
 })
 
 router.delete('/account', (req,res)=>{
