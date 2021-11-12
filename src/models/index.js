@@ -3,7 +3,6 @@
 //models/index.js
 const Sequelize = require('sequelize');
 const User = require('./user');
-const Account = require('./account');
 const Coupon = require('./coupon');
 const Company = require('./company');
 
@@ -15,17 +14,14 @@ const sequelize = new Sequelize(config.database, config.username, config.passwor
 
 db.sequelize = sequelize;
 db.User = User;
-db.Account = Account;
 db.Coupon = Coupon;
 db.Company = Company;
 
 User.init(sequelize);
-Account.init(sequelize);
 Coupon.init(sequelize);
 Company.init(sequelize);
 
 User.associate(db);
-Account.associate(db);
 Coupon.associate(db);
 Company.associate(db);
 

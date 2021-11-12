@@ -29,13 +29,18 @@ class Company extends Sequelize.Model {
                 type: Sequelize.STRING(45),
                 allowNull: false
             },
-            company_category:{
+            activity_category:{
                 type: Sequelize.STRING(45),
                 allowNull: false
             },
-            account_id: {
-                type: Sequelize.INTEGER,
-                allowNull: false
+            account_number: {
+                type: Sequelize.STRING(45),
+                allowNull: false,
+                unique: true
+            },
+            account_image: {
+                type: Sequelize.STRING(100),
+                allowNull: true
             }
         },  {
             sequelize,
@@ -48,9 +53,7 @@ class Company extends Sequelize.Model {
             collate: 'utf8_general_ci'
         });
     }
-    static associate(db) {
-        db.Company.belongsTo(db.Account)
-    }
+    static associate(db) { }
 }
 
 module.exports = Company;
