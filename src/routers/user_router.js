@@ -4,8 +4,6 @@ const multer = require('multer');
 const path = require('path');
 const router = express.Router();
 
-router.use(express.json());
-router.use(express.urlencoded({ extended: false }));
 const profile_storage = multer.diskStorage({
     // 업로드된 파일명과 서버의 파일명을 동일하게 세팅
     destination(req, file, cb){
