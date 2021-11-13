@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const db = require("./index")
+
 
 class Company extends Sequelize.Model {
     static init(sequelize){

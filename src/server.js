@@ -9,6 +9,7 @@ const { sequelize } = require('./models');
 const weather_router = require('./routers/weather_router'); 
 const user_router = require('./routers/user_router'); 
 const company_router = require('./routers/company_router');
+const activity_router = require('./routers/activity_router');
 const app = express();
 
 const port = process.env.PORT || 3003;
@@ -31,12 +32,14 @@ app.use(express.urlencoded({ extended: false }));
 app.use(weather_router);
 app.use(user_router);
 app.use(company_router);
-
+app.use(activity_router);
 
 app.listen(port, () => {
     var account_images = './images/account_images';
     var profile_images = './images/profile_images';
+    var activity_images = './images/activity_images';
     if(!fs.existsSync(account_images)) fs.mkdirSync(account_images);
     if(!fs.existsSync(profile_images)) fs.mkdirSync(profile_images);
+    if(!fs.existsSync(activity_images)) fs.mkdirSync(activity_images);
     console.log(`server is listening at localhost:${port}`);
 });

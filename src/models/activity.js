@@ -19,10 +19,6 @@ class Activity extends Sequelize.Model {
                 type: Sequelize.STRING(20),
                 allowNull: false
             },
-            company_manager:{
-                type: Sequelize.STRING(45),
-                allowNull: false
-            },
             license_image:{
                 type: Sequelize.STRING(100),
                 allowNull: false

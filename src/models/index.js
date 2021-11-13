@@ -6,6 +6,7 @@ const User = require('./user');
 const Coupon = require('./coupon');
 const Company = require('./company');
 const Activity = require('./activity');
+const Activity_image = require('./activity_image');
 
 const env = process.env.NODE_ENV || 'development';
 const config = require('../config/config')[env];
@@ -18,15 +19,18 @@ db.User = User;
 db.Coupon = Coupon;
 db.Company = Company;
 db.Activity = Activity;
+db.Activity_image = Activity_image;
 
 User.init(sequelize);
 Coupon.init(sequelize);
 Company.init(sequelize);
 Activity.init(sequelize);
+Activity_image.init(sequelize);
 
 User.associate(db);
 Coupon.associate(db);
 Company.associate(db);
 Activity.associate(db);
+Activity_image.associate(db);
 
 module.exports = db;
