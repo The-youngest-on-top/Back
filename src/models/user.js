@@ -6,6 +6,7 @@ class User extends Sequelize.Model {
             user_id: {
                 type: Sequelize.STRING(45),
                 allowNull: false,
+                primaryKey: true,
                 unique: true,
             },
             password: {
