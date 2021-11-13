@@ -8,6 +8,7 @@ const { sequelize } = require('./models');
 
 const weather_router = require('./routers/weather_router'); 
 const user_router = require('./routers/user_router'); 
+const coupon_router = require('./routers/coupon_router');
 const company_router = require('./routers/company_router');
 const activity_router = require('./routers/activity_router');
 const app = express();
@@ -31,6 +32,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(weather_router);
 app.use(user_router);
+app.use(coupon_router);
 app.use(company_router);
 app.use(activity_router);
 
