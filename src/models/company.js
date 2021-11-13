@@ -7,6 +7,7 @@ class Company extends Sequelize.Model {
             company_id: {
                 type: Sequelize.STRING(45),
                 allowNull: false,
+                primaryKey: true,
                 unique: true
             },
             password:{
