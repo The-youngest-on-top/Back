@@ -20,13 +20,6 @@ router.post('/activity',upload_with_original_file_name.array("activity_images"),
     let images = req.files;
     let data = req.body;
     let license_image = `${images[0].destination}/${images[0].filename}`
-    console.log(data.company_id)
-    let company = await Company.findOne({
-        where: {
-            "company_id": data.company_id
-        }
-    })
-    console.log(`company_id: ${company.id}`)
     await Activity.create({
         "activity_category": data.activity_category,
         "activity_name": data.activity_name,
@@ -34,14 +27,14 @@ router.post('/activity',upload_with_original_file_name.array("activity_images"),
         "location": data.location,
         "address": data.address,
         "license_image": license_image,
-        "company_id": company.id,
+        "company_id": data.company_id,
         
     });
     let activity = await Activity.findOne({
         attributes: ['id'],
         where: {
             "activity_name": data.activity_name,
-            "company_id": company.id
+            "company_id":  data.company_id
         }
     })
     for(let i = 1; i<images.length; i++){
@@ -57,15 +50,9 @@ router.post('/activity',upload_with_original_file_name.array("activity_images"),
 
 router.get('/activity', async (req,res)=>{
    let {activity_name, company_id} = req.body;
-   let company = await Company.findOne({
-    where: {
-        "company_id": company_id
-    }
-    })
-    console.log(company.id);
     let activity = await Activity.findAll({
         where: {
-            "id": company.id,
+            "id": company_id,
             "activity_name": activity_name 
         }
     });
