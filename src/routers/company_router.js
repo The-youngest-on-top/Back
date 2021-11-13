@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/company_controller');
 const multer = require('multer');
-const Company = require('../models/company');
 
 
 
