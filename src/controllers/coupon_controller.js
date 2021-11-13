@@ -15,20 +15,21 @@ exports.regist_coupon = async (req,res) =>{
     let yyyy = today.getFullYear();
     const dataBuffer = fs.readFileSync(`${project_path}/coupon/coupon_list.json`);
     const dataJSON = JSON.parse(dataBuffer);
-    console.log(dataJSON[data.coupon_id].coupon_name);
-    let user_data = await User.findAll({
-        attributes: ['id'],
-        where: {
-            "id": data.id
-        }
-    })
-    console.log("확인"+user_data.id)
+    console.log(dataJSON[data.coupon_num].coupon_name);
+    // let user_data = await User.findAll({
+    //     attributes: ['id'],
+    //     where: {
+    //         "user_id": data.user_id
+    //     }
+    // })
+    
+    console.log("확인"+data.user_id)
     await Coupon.create({
-        "coupon_name": dataJSON[data.coupon_id].coupon_name,
-        "price": dataJSON[data.coupon_id].price,
-        "publisher": dataJSON[data.coupon_id].publisher,
+        "coupon_name": dataJSON[data.coupon_num].coupon_name,
+        "price": dataJSON[data.coupon_num].price,
+        "publisher": dataJSON[data.coupon_num].publisher,
         "deadline": `${yyyy}-${mm}-${dd}`,
-        "user_id": user_data.id
+        "user_id": data.user_id
     });
 
     

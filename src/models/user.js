@@ -3,7 +3,7 @@ const db = require("./index")
 class User extends Sequelize.Model {
     static init(sequelize) {
         return super.init({
-            user_id: {
+            id: {
                 type: Sequelize.STRING(45),
                 allowNull: false,
                 primaryKey: true,
