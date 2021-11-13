@@ -9,6 +9,7 @@ const { sequelize } = require('./models');
 const weather_router = require('./routers/weather_router'); 
 const user_router = require('./routers/user_router'); 
 const account_router = require('./routers/account_router');
+const coupon_router = require('./routers/coupon_router');
 const app = express();
 
 const port = process.env.PORT || 3003;
@@ -31,7 +32,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(weather_router);
 app.use(user_router);
 app.use(account_router);
-
+app.use(coupon_router);
 
 app.listen(port, () => {
     var account_images = './images/account_images';
