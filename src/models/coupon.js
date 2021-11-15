@@ -3,6 +3,10 @@ const db = require("./index")
 class Coupon extends Sequelize.Model {
     static init(sequelize) {
         return super.init({
+            coupon_num: {
+                type: Sequelize.STRING(100),
+                allowNull: false,
+            },
             coupon_name: {
                 type: Sequelize.STRING(45),
                 allowNull: false,

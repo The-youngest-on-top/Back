@@ -1,14 +1,13 @@
 const Sequelize = require('sequelize');
-
+const db = require("./index")
 
 class Company extends Sequelize.Model {
     static init(sequelize){
         return super.init({
-            company_id: {
+            id: {
                 type: Sequelize.STRING(45),
                 allowNull: false,
                 primaryKey: true,
-                unique: true
             },
             password:{
                 type: Sequelize.STRING(45),
@@ -30,18 +29,13 @@ class Company extends Sequelize.Model {
                 type: Sequelize.STRING(45),
                 allowNull: false
             },
-            activity_category:{
+            company_category:{
                 type: Sequelize.STRING(45),
                 allowNull: false
             },
-            account_number: {
-                type: Sequelize.STRING(45),
-                allowNull: false,
-                unique: true
-            },
-            account_image: {
-                type: Sequelize.STRING(100),
-                allowNull: true
+            account_id: {
+                type: Sequelize.INTEGER,
+                allowNull: false
             }
         },  {
             sequelize,
@@ -54,7 +48,7 @@ class Company extends Sequelize.Model {
             collate: 'utf8_general_ci'
         });
     }
-    static associate(db) { }
+    static associate(db) {}
 }
 
 module.exports = Company;

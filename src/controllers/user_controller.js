@@ -5,7 +5,7 @@ exports.signup_user = async (req,res) =>{
     let data = req.body;
     let profile_image = `${req.file.destination}/${req.file.filename}`;
     await User.create({
-        "user_id":data.user_id,
+        "id":data.user_id,
         "password":data.password,
         "profile_image": profile_image,
         "nickname": data.nickname,
