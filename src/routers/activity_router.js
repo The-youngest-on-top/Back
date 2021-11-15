@@ -49,10 +49,9 @@ router.post('/activity',upload_with_original_file_name.array("activity_images"),
 })
 
 router.get('/activity', async (req,res)=>{
-   let {activity_name, company_id} = req.body;
+    let {activity_name, company_id} = req.body;
     let activity = await Activity.findAll({
         where: {
-            "id": company_id,
             "activity_name": activity_name 
         }
     });
@@ -60,4 +59,29 @@ router.get('/activity', async (req,res)=>{
     res.send(activity);
 })
 
+router.get('/activity/images', async (req,res)=>{
+    let {activity_name} = req.body;
+    let activity = await Activity.findOne({
+        where: {
+            "activity_name": activity_name 
+        }
+    });
+    let images = await Activity_image.findAll({
+        where: {
+            "activity_id": activity.id
+        }
+    })
+    console.log(images);
+    res.send(images);
+})
+
+router.delete('/activity', async (req,res)=>{
+    let {activity_name} = req.body;
+    Activity.destroy({
+        where:{
+            "activity_name": activity_name
+        }
+    })
+    console.log(`${activity_name} 삭제`)
+})
 module.exports = router;
