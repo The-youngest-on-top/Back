@@ -15,43 +15,31 @@ exports.regist_coupon = async (req,res) =>{
     let yyyy = today.getFullYear();
     const dataBuffer = fs.readFileSync(`${project_path}/coupon/coupon_list.json`);
     const dataJSON = JSON.parse(dataBuffer);
-    console.log(dataJSON[data.coupon_id].coupon_name);
-    let user_data = await User.findAll({
-        attributes: ['id'],
-        where: {
-            "id": data.id
-        }
-    })
-    console.log("확인"+user_data.id)
-    await Coupon.create({
-        "coupon_name": dataJSON[data.coupon_id].coupon_name,
-        "price": dataJSON[data.coupon_id].price,
-        "publisher": dataJSON[data.coupon_id].publisher,
-        "deadline": `${yyyy}-${mm}-${dd}`,
-        "user_id": user_data.id
-    });
-
-    
-    // if(coupon_data[data.coupon_num] == "")
-    // await Coupon.create({
-    //     "user_id":data.user_id,
-    //     "password":data.password,
-    //     "profile_image": profile_image,
-    //     "nickname": data.nickname,
-    //     "name": data.name,
-    //     "phone_number":data.phone_number,
-    //     "birthday":data.birthday,
-    //     "email": data.email
+    console.log(dataJSON[data.coupon_num].coupon_name);
+    // let user_data = await User.findAll({
+    //     attributes: ['id'],
+    //     where: {
+    //         "user_id": data.user_id
+    //     }
     // })
     
-
+    console.log("확인"+data.user_id)
+    await Coupon.create({
+        "coupon_num":data.coupon_num,
+        "coupon_name": dataJSON[data.coupon_num].coupon_name,
+        "price": dataJSON[data.coupon_num].price,
+        "publisher": dataJSON[data.coupon_num].publisher,
+        "deadline": `${yyyy}-${mm}-${dd}`,
+        "user_id": data.user_id
+    }); 
     res.send(`${dataJSON[data.coupon_id]} 
                 ${data.user_id} 쿠폰 번호 저장 성공`);
 };
 
-exports.get_user = async (req,res)=>{
+exports.get_coupon = async (req,res)=>{
     let user_id = req.body.user_id;
-    let result= await User.findAll({
+    console.log(user_id);
+    let result= await Coupon.findAll({
         where:{
             "user_id": user_id
         }
@@ -60,53 +48,38 @@ exports.get_user = async (req,res)=>{
     res.send(result);
 };
 
-exports.get_profile_image = async (req,res)=>{
-    let user_id = req.body.user_id;
-    let project_path = path.resolve("./");
-    let user_data= await User.findOne({
-        attributes:['profile_image'],
-        where:{
-            "user_id": user_id
-        }
-    })
-    console.log(`${project_path}/${user_data.profile_image}`);
-    res.sendFile(`${project_path}/${user_data.profile_image}`);
-};
+// exports.get_profile_image = async (req,res)=>{
+//     let user_id = req.body.user_id;
+//     let project_path = path.resolve("./");
+//     let user_data= await User.findOne({
+//         attributes:['profile_image'],
+//         where:{
+//             "user_id": user_id
+//         }
+//     })
+//     console.log(`${project_path}/${user_data.profile_image}`);
+//     res.sendFile(`${project_path}/${user_data.profile_image}`);
+// };
 
-exports.delete_user = async (req,res)=>{
-    let user_id = req.body.user_id;
-    await User.destroy({
-        where:{
-            "user_id": user_id
-        }
-    })
+// exports.delete_user = async (req,res)=>{
+//     let user_id = req.body.user_id;
+//     await User.destroy({
+//         where:{
+//             "user_id": user_id
+//         }
+//     })
     
-    res.send(`${user_id}   삭제`);
-};
+//     res.send(`${user_id}   삭제`);
+// };
 
-exports.modify_user = async (req,res)=>{
-    let modify = req.body.modify_id;
-    let user_id = req.body.user_id;
-    let password = req.body.password;
-    let nickname = req.body.nickname;
-    // await User.update({
-    //     comment: user_id,
-    // }, {
-    //     where: { id: 2 },
-    // });
-    if(modify==1)
-    {
-        await User.update({password:password},{where:{user_id:user_id}});
-        res.send(`${user_id}   패스워드만 수정`);
-    }
-    else if(modify==2)
-    {
-        await User.update({nickname:nickname},{where:{user_id:user_id}});
-        res.send(`${user_id}   닉네임만 수정`);
-    }
-    else if(modify==3)
-    {
-        await User.update({password:password, nickname:nickname},{where:{user_id:user_id}});
-        res.send(`${user_id}   둘다 수정`);
-    }
+exports.modify_coupon = async (req,res)=>{
+    let {user_id, coupon_num} = req.body;
+    console.log(user_id);
+
+    await Coupon.update({"validity":0},{where:{"user_id":user_id, "coupon_num":coupon_num}});
+    res.send(`${coupon_num}   쿠폰사용`);
+
+    // console.log(result);
+    // res.send(result);
+    
 };

@@ -7,7 +7,7 @@ exports.signup_user = async (req,res) =>{
     let profile_image = `${req.file.location}`;
     console.log(profile_image);
     await User.create({
-        "user_id":data.user_id,
+        "id":data.user_id,
         "password":data.password,
         "profile_image": profile_image,
         "nickname": data.nickname,
