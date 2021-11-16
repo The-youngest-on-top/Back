@@ -8,8 +8,8 @@ router.use(express.json());
 router.use(express.urlencoded({ extended: false }));
 
 router.post('/heart',controller.regist_heart);
-router.get('/coupon', controller.get_coupon);
-router.patch('/coupon', controller.modify_coupon);
+router.get('/heart', controller.get_heart);
+router.delete('/heart', controller.delete_heart);
 
 
 

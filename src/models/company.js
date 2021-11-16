@@ -29,14 +29,19 @@ class Company extends Sequelize.Model {
                 type: Sequelize.STRING(45),
                 allowNull: false
             },
-            company_category:{
+            activity_category:{
                 type: Sequelize.STRING(45),
                 allowNull: false
             },
-            account_id: {
-                type: Sequelize.INTEGER,
+            account_number: {
+                type: Sequelize.STRING(45),
+                allowNull: false
+            },
+            account_image: {
+                type: Sequelize.STRING(100),
                 allowNull: false
             }
+
         },  {
             sequelize,
             timestamps: true,
