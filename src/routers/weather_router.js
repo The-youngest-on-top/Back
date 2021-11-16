@@ -8,8 +8,6 @@ const land_fcst_location = require("../weather/mid_land_fcst_loctaion.json");
 const ta_location = require("../weather/mid_ta_location.json");
 const xy_converter = require("../weather/xy_converter");
 
-
-
 router.get('/', (req,res)=>{
     res.send('Server Open');
 });
