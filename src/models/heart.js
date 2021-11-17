@@ -3,7 +3,16 @@ const db = require("./index")
 class Heart extends Sequelize.Model {
     static init(sequelize) {
         return super.init({
-            
+            activity_id: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                primaryKey: true,
+            },
+            user_id: {
+                type: Sequelize.STRING(45),
+                allowNull: false,
+                primaryKey: true,
+            }
         }, {
             sequelize,
             timestamps: true,
@@ -15,7 +24,10 @@ class Heart extends Sequelize.Model {
             collate: 'utf8_general_ci'
         });
     }
-    
+    static associate(db) {
+        db.Heart.belongsTo(db.User);
+        db.Heart.belongsTo(db.Activity);
+    }
 };
 
 module.exports = Heart;
