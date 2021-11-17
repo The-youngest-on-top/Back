@@ -23,12 +23,35 @@ exports.get_user = async (req,res)=>{
     let user_id = req.body.user_id;
     let result= await User.findAll({
         where:{
-            "user_id": user_id
+            "id": user_id
         }
     })
     console.log(result);
     res.send(result);
 };
+
+exports.check_id = async (req,res)=>{
+    let user_id = req.body.user_id;
+    let result= await User.findOne({
+        where:{
+            "id": user_id
+        },
+    })
+    if(result){
+        res.send({
+            "success": false,
+            "message": "이미 사용중인 아이디"
+        })
+    } else{
+        res.send({
+            "success": true,
+            "message": "사용가능한 아이디"
+        })
+    }
+};
+
+
+
 
 exports.get_profile_image = async (req,res)=>{
     let user_id = req.body.user_id;
