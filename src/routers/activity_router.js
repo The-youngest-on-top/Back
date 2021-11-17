@@ -1,25 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const multer = require('multer');
 const Activity = require('../models/activity');
 const Activity_image = require('../models/activity_image');
 const Company = require('../models/company');
+const {activity_upload} = require('../multer');
 
-const activity_storage = multer.diskStorage({
-    // 업로드된 파일명과 서버의 파일명을 동일하게 세팅
-    destination(req, file, cb){
-        cb(null, 'images/activity_images');
-    },
-    filename(req, file, cb){
-        cb(null, `${Date.now()}__${file.originalname}`);
-    }
-});
-const upload_with_original_file_name= multer({storage: activity_storage});  // 이미지 업로드 (파일명 동일)
-
-router.post('/activity',upload_with_original_file_name.array("activity_images"), async (req,res)=> {
+router.post('/activity',activity_upload.array("activity_images"), async (req,res)=> {
     let images = req.files;
     let data = req.body;
-    let license_image = `${images[0].destination}/${images[0].filename}`
+    let license_image = `${images[0].location}`
     await Activity.create({
         "activity_category": data.activity_category,
         "activity_name": data.activity_name,
@@ -38,7 +27,7 @@ router.post('/activity',upload_with_original_file_name.array("activity_images"),
         }
     })
     for(let i = 1; i<images.length; i++){
-        let activity_image = `${images[i].destination}/${images[i].filename}`;
+        let activity_image = `${images[i].location}`;
         await Activity_image.create({
             "image_url": activity_image,
             "activity_id": activity.id
@@ -57,6 +46,29 @@ router.get('/activity', async (req,res)=>{
     });
     console.log(activity);
     res.send(activity);
+})
+
+router.get('/activity/location', async (req,res)=>{
+    let {location} = req.body;
+    let activity = await Activity.findAll({
+        attributes: ["activity_category", "activity_name", "activity_price", "location", "company_id"],
+        where: {
+            "location": location 
+        }
+    });
+    if(activity.length){
+        res.send({
+            "success": true,
+            "data": activity
+        });
+    }
+    else {
+        res.send({
+            "success": false,
+            "error": "해당 지역에 activity가 없습니다."
+        });
+    }
+   
 })
 
 router.get('/activity/images', async (req,res)=>{
