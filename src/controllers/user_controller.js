@@ -3,20 +3,52 @@ const path = require('path');
 
 exports.signup_user = async (req,res) =>{
     let data = req.body;
-    console.log(req.file)
     let profile_image = `test`;
-    console.log(profile_image);
-    await User.create({
-        "id":data.user_id,
-        "password":data.password,
-        "profile_image": profile_image,
-        "nickname": data.nickname,
-        "name": data.name,
-        "phone_number":data.phone_number,
-        "birthday":data.birthday,
-        "email": data.email
+    console.log(req.body);
+    
+
+    let e_result= await User.findOne({
+        where:{
+            "email": data.email
+        }
     })
-    res.send(`${data.user_id} 저장 성공`);
+    if(e_result){
+        res.send({
+            "success": false,
+            "message": "사용 불가 이메일"
+        })
+    }
+
+    let p_result= await User.findOne({
+        where:{
+            "phone_number": data.phone_number
+        },
+    })
+    if(p_result){
+        res.send({
+            "success": false,
+            "message": "사용 불가 전화번호"
+        })
+    } 
+    if(!(e_result || p_result))
+    {
+        await User.create({
+            "id":data.user_id,
+            "password":data.password,
+            "profile_image": profile_image,
+            "nickname": data.nickname,
+            "name": data.name,
+            "phone_number":data.phone_number,
+            "birthday":data.birthday,
+            "email": data.email
+        })
+        res.send(`${data.user_id} 저장 성공`);
+    }
+
+
+
+
+   
 };
 
 exports.get_user = async (req,res)=>{
