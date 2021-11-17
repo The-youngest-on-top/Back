@@ -4,6 +4,7 @@
 const Sequelize = require('sequelize');
 const User = require('./user');
 const Coupon = require('./coupon');
+//const Reserve = require('./reserve');
 const Heart = require('./heart');
 const Company = require('./company');
 const Activity = require('./activity');
@@ -18,6 +19,7 @@ const sequelize = new Sequelize(config.database, config.username, config.passwor
 db.sequelize = sequelize;
 db.User = User;
 db.Coupon = Coupon;
+//db.Reserve = Reserve;
 db.Heart = Heart;
 db.Company = Company;
 db.Activity = Activity;
@@ -25,6 +27,7 @@ db.Activity_image = Activity_image;
 
 User.init(sequelize);
 Coupon.init(sequelize);
+//Reserve.init(sequelize);
 Heart.init(sequelize);
 Company.init(sequelize);
 Activity.init(sequelize);
@@ -32,6 +35,7 @@ Activity_image.init(sequelize);
 
 User.associate(db);
 Coupon.associate(db);
+//Reserve.associate(db);
 Heart.associate(db);
 Company.associate(db);
 Activity.associate(db);
