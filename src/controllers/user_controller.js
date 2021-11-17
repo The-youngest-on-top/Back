@@ -4,7 +4,7 @@ const path = require('path');
 exports.signup_user = async (req,res) =>{
     let data = req.body;
     console.log(req.file)
-    let profile_image = `${req.file.location}`;
+    let profile_image = `test`;
     console.log(profile_image);
     await User.create({
         "id":data.user_id,
