@@ -8,7 +8,7 @@ const Company = require('./company');
 const Activity = require('./activity');
 const Activity_image = require('./activity_image');
 
-const env = process.env.NODE_ENV || 'development';
+const env = process.env.NODE_ENV || 'test';
 const config = require('../config/config')[env];
 const db = {};
 
