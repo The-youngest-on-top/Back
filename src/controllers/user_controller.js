@@ -3,7 +3,7 @@ const path = require('path');
 
 exports.signup_user = async (req,res) =>{
     let data = req.body;
-    let profile_image = `test`;
+    let profile_image = `${req.file.location}`;
     console.log(req.body);
     
 
@@ -30,7 +30,20 @@ exports.signup_user = async (req,res) =>{
             "message": "사용 불가 전화번호"
         })
     } 
-    if(!(e_result || p_result))
+
+    let n_result= await User.findOne({
+        where:{
+            "nickname": data.nickname
+        },
+    })
+    if(n_result){
+        res.send({
+            "success": false,
+            "message": "사용 불가 닉네임"
+        })
+    } 
+
+    if(!(e_result || p_result || n_result))
     {
         await User.create({
             "id":data.user_id,
