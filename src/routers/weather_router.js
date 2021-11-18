@@ -291,11 +291,12 @@ router.get('/weathermap/:lat/:lng', (req,res)=>{
         if(todayfcst.length!=0){
             res.send({
                 "success": true,
-                "today":todayfcst
+                "data":todayfcst
             }); 
         } else{
             res.send({
-                "success": false
+                "success": false,
+                "message": "날씨 정보를 불러올 수 없습니다."
             })
         }
         

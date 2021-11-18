@@ -18,7 +18,7 @@ exports.signup_company = async (req,res)=>{
     });
     result = await Company.findAll({
         where: {
-            "company_id": company_id
+            "id": company_id
         }
     });
     console.log(result);
