@@ -22,20 +22,13 @@ router.get('/midlandfcst/:location', async (req,res,next)=>{
     let url = 'http://apis.data.go.kr/1360000/MidFcstInfoService/getMidLandFcst';
     let params = req.params;
     let mid_land_fcst = [];
-    let today = moment();
-    today.setHours(today.getHours());
-    let dd = today.getDate();
-    let mm = today.getMonth()+1;
-    let yyyy = today.getFullYear();
-    let hours = today.getHours();
+    let today = moment().format('YYYY-mm-dd-HH');
+    let dd = moment().format('DD')
+    let mm = moment().format('MM')
+    let yyyy = moment().format('YYYY')
+    let hours = moment().format('HH')
     if(hours < 7){
         dd = dd-1;
-    }
-    if(mm<10){
-        mm = '0' +mm;
-    }
-    if(dd<10){
-        dd = '0' +dd;
     }
     let queryParams = '?' + encodeURIComponent('serviceKey') + `${service_key.mid_service_key}`; /* Service Key*/
     queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1'); /* */
@@ -137,15 +130,14 @@ router.get('/midta/:location', (req,res)=>{
 router.get('/weathermap/:lat/:lng', (req,res)=>{
     let todayfcst = [];
     let params = req.params;
-    let today = new Date();
     let nxy = xy_converter.xy_conv("toXY",params.lat,params.lng);
     console.log(nxy);
-    today.setHours(today.getHours());
-    let dd = today.getDate();
-    let real = dd;
-    let mm = today.getMonth()+1;
-    let yyyy = today.getFullYear();
-    let hours = today.getHours();
+    let today = moment().format('YYYY-mm-dd-HH');
+    let dd = moment().format('DD');
+    let real = moment().format('DD');
+    let mm = moment().format('MM');
+    let yyyy = moment().format('YYYY');
+    let hours = moment().format('HH');
     if(hours < 3){
         dd = dd-1;
         hours = 23;
@@ -212,7 +204,6 @@ router.get('/weathermap/:lat/:lng', (req,res)=>{
             let fcst_date = $(this).find('fcstDate').text();
             let category =$(this).find('category').text();
             let value =$(this).find('fcstValue').text();
-            console.log(fcst_date);
             if(fcst_date==date){
                 if(category=="TMN"){
                     console.log(`날짜: ${fcst_date} 최저기온: ${value}`);
