@@ -55,7 +55,11 @@ exports.signup_user = async (req,res) =>{
             "birthday":data.birthday,
             "email": data.email
         })
-        res.send(`${data.user_id} 저장 성공`);
+        res.send({
+            "success": true,
+            "message": "회원가입 완료"
+        })
+        // res.send(`${data.user_id} 저장 성공`);
     }
 
 
