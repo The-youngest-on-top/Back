@@ -1,7 +1,7 @@
 const express = require('express');
 const controller = require('../controllers/user_controller');
 const router = express.Router();
-const { profile_upload }= require('../multer');
+const { profile_upload }= require('../models/multer');
 
 
 router.post('/user',profile_upload.single('profile_image'),controller.signup_user);

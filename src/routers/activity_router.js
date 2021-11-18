@@ -3,7 +3,7 @@ const router = express.Router();
 const Activity = require('../models/activity');
 const Activity_image = require('../models/activity_image');
 const Company = require('../models/company');
-const {activity_upload} = require('../multer');
+const {activity_upload} = require('../models/multer');
 
 router.post('/activity',activity_upload.array("activity_images"), async (req,res)=> {
     let images = req.files;

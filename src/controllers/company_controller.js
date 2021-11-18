@@ -45,5 +45,5 @@ exports.delete_company =  async (req,res)=>{
         }
     })
     
-    res.send(`${company_id}   삭제`);
+    res.send(`${company_id} 삭제`);
 };

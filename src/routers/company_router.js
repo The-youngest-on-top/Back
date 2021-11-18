@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/company_controller');
-const {account_upload} = require('../multer');
+const {account_upload} = require('../models/multer');
 
 
 router.post('/company', account_upload.single('account_image'), controller.signup_company);
