@@ -3,6 +3,9 @@ const router = express.Router();
 
 const cheerio = require("cheerio");
 const request = require('request');
+const moment = require('moment');
+require('moment-timezone');
+moment.tz.setDefault("Asia/Seoul");
 const service_key = require("../../weatherAPI.json");
 const land_fcst_location = require("../weather/mid_land_fcst_loctaion.json");
 const ta_location = require("../weather/mid_ta_location.json");
@@ -19,7 +22,7 @@ router.get('/midlandfcst/:location', async (req,res,next)=>{
     let url = 'http://apis.data.go.kr/1360000/MidFcstInfoService/getMidLandFcst';
     let params = req.params;
     let mid_land_fcst = [];
-    let today = new Date();
+    let today = moment();
     today.setHours(today.getHours());
     let dd = today.getDate();
     let mm = today.getMonth()+1;
@@ -209,6 +212,7 @@ router.get('/weathermap/:lat/:lng', (req,res)=>{
             let fcst_date = $(this).find('fcstDate').text();
             let category =$(this).find('category').text();
             let value =$(this).find('fcstValue').text();
+            console.log(fcst_date);
             if(fcst_date==date){
                 if(category=="TMN"){
                     console.log(`날짜: ${fcst_date} 최저기온: ${value}`);
