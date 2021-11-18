@@ -33,7 +33,7 @@ exports.get_company = async (req,res)=>{
             "id": company_id
         }
     })
-    console.log(result);
+    console.log(`${result}`);
     res.send(result);
 };
 
