@@ -296,7 +296,7 @@ router.get('/weathermap/:lat/:lng', (req,res)=>{
         } else{
             res.send({
                 "success": false,
-                "error": "날씨 정보를 불러올 수 없습니다."
+                "message": "날씨 정보를 불러올 수 없습니다."
             })
         }
         

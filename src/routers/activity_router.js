@@ -65,7 +65,7 @@ router.get('/activity/location', async (req,res)=>{
     else {
         res.send({
             "success": false,
-            "error": "해당 지역에 activity가 없습니다."
+            "message": "해당 지역에 activity가 없습니다."
         });
     }
    
