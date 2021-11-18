@@ -264,25 +264,13 @@ router.get('/weathermap/:lat/:lng', (req,res)=>{
                     complete_flag++;
                 }
                 if(fcst_flag==0&& complete_flag==5){
-                    if(pop<50||pty==0){
-                        todayfcst = {
-                            "date" : fcst_date, 
-                            "min" : min,
-                            "max" : max,
-                            "sky" : sky,
-                            "pty" : null,
-                            "rain" : pop
-                        }
-                    }
-                    else {
-                        todayfcst = {
-                            "date" : fcst_date, 
-                            "min" : min,
-                            "max" : max,
-                            "sky" : sky,
-                            "pty" : pty,
-                            "rain" : pop
-                        }
+                    todayfcst = {
+                        "date" : fcst_date, 
+                        "min" : min,
+                        "max" : max,
+                        "sky" : sky,
+                        "pty" : pty,
+                        "rain" : pop
                     }
                 }
             }
