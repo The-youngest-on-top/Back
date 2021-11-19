@@ -99,7 +99,37 @@ exports.check_id = async (req,res)=>{
     }
 };
 
+exports.login = async (req,res)=>{
+    let data = req.body;
+    // let user_id = req.body.user_id;
+    // let password = req.body.password;
+    let result= await User.findOne({
+        where:{
+            "id": data.user_id
+        },
+    })
+    if(!result){
+        res.send({
+            "success": false,
+            "message": "존재하지 않는 아이디"
+        })
+    } else{
+        
+        
+        if(data.password==result.password){
+            res.send({
+                "success": true,
+                "message": `${result.id} 로그인 성공`
+            })
+        } else{
+            res.send({
+                "success": false,
+                "message": "존재하지 않는 비밀번호"
+            })
+        }
 
+    }
+};
 
 
 exports.get_profile_image = async (req,res)=>{
