@@ -5,8 +5,6 @@ exports.signup_user = async (req,res) =>{
     let data = req.body;
     let profile_image = `${req.file.location}`;
     console.log(req.body);
-    
-
     let e_result= await User.findOne({
         where:{
             "email": data.email

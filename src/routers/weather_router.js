@@ -6,7 +6,6 @@ const request = require('request');
 const moment = require('moment');
 require('moment-timezone');
 moment.tz.setDefault("Asia/Seoul");
-const service_key = require("../../weatherAPI.json");
 const land_fcst_location = require("../weather/mid_land_fcst_loctaion.json");
 const ta_location = require("../weather/mid_ta_location.json");
 const xy_converter = require("../weather/xy_converter");
@@ -30,7 +29,7 @@ router.get('/midlandfcst/:location', async (req,res,next)=>{
     if(hours < 7){
         dd = dd-1;
     }
-    let queryParams = '?' + encodeURIComponent('serviceKey') + `${service_key.mid_service_key}`; /* Service Key*/
+    let queryParams = '?' + encodeURIComponent('serviceKey') + `${process.env.mid_service_key}`; /* Service Key*/
     queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1'); /* */
     queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('10'); /* */
     queryParams += '&' + encodeURIComponent('dataType') + '=' + encodeURIComponent('XML'); /* */
@@ -95,7 +94,7 @@ router.get('/midta/:location', (req,res)=>{
         dd = '0' +dd;
     }
     let url = 'http://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa';
-    let queryParams = '?' + encodeURIComponent('serviceKey') + `${service_key.mid_service_key}`; /* Service Key*/
+    let queryParams = '?' + encodeURIComponent('serviceKey') + `${process.env.mid_service_key}`; /* Service Key*/
     queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1'); /* */
     queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('10'); /* */
     queryParams += '&' + encodeURIComponent('dataType') + '=' + encodeURIComponent('XML'); /* */
@@ -174,7 +173,7 @@ router.get('/weathermap/:lat/:lng', (req,res)=>{
     }
     console.log(`시간: ${hours}00`)
     var url = 'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst';
-    var queryParams = '?' + encodeURIComponent('serviceKey') +`=${service_key.short_service_key}`; /* Service Key*/
+    var queryParams = '?' + encodeURIComponent('serviceKey') +`=${process.env.short_service_key}`; /* Service Key*/
     queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1'); /* */
     queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('1000'); /* */
     queryParams += '&' + encodeURIComponent('dataType') + '=' + encodeURIComponent('XML'); /* */
