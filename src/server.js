@@ -3,17 +3,17 @@ const path    = require('path');
 const morgan  = require('morgan');
 const cors    = require("cors");
 const fs      =require('fs');
-require('dotenv').config();
-
 
 const { sequelize } = require('./models');
 
 const weather_router = require('./routers/weather_router'); 
 const user_router = require('./routers/user_router'); 
 const coupon_router = require('./routers/coupon_router');
+const reserve_router = require('./routers/reserve_router');
 const heart_router = require('./routers/heart_router');
 const company_router = require('./routers/company_router');
 const activity_router = require('./routers/activity_router');
+const travel_router = require('./routers/travel_router');
 const app = express();
 
 const port = process.env.PORT || 3003;
@@ -36,9 +36,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(weather_router);
 app.use(user_router);
 app.use(coupon_router);
+app.use(reserve_router);
 app.use(heart_router);
 app.use(company_router);
 app.use(activity_router);
+app.use(travel_router);
 
 app.listen(port, () => {
     // var account_images = './images/account_images';
