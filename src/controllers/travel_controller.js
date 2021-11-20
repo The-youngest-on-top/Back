@@ -4,9 +4,8 @@ const Company = require('../models/company');
 
 
 exports.add_travel = async (req,res)=> {
-    // let images = req.files;
+    let images = req.files;
     let data = req.body;
-    // let license_image = `${images[0].location}`
     await Travel.create({
         "travel_name": data.travel_name,
         "location": data.location,
@@ -14,68 +13,57 @@ exports.add_travel = async (req,res)=> {
         "content":data.content,
         
     });
-    // let activity = await Activity.findOne({
-    //     attributes: ['id'],
-    //     where: {
-    //         "activity_name": data.activity_name,
-    //         "company_id":  data.company_id
-    //     }
-    // })
-    // for(let i = 1; i<images.length; i++){
-    //     let activity_image = `${images[i].location}`;
-    //     await Activity_image.create({
-    //         "image_url": activity_image,
-    //         "activity_id": activity.id
-    //     })
-    //     console.log(images[i].filename);
-    // }
+    let travel = await Travel.findOne({
+        attributes: ['id'],
+        where: {
+            "travel_name": data.travel_name
+        }
+    })
+    console.log(travel.id);
+    for(let i = 0; i<images.length; i++){
+        let travel_image = `${images[i].location}`;
+        await Travel_image.create({
+            "image_url": travel_image,
+            "travel_id": travel.id
+        })
+        console.log(images[i].filename);
+    }
     res.send(`travel 저장 성공`);
 };
 
-exports.get_activity = async (req,res)=>{
-    let {activity_name, company_id} = req.body;
-    let activity = await Activity.findAll({
-        where: {
-            "activity_name": activity_name,
-            "company_id": company_id
-        }
-    });
-    console.log(activity);
-    res.send(activity);
-};
-
-exports.get_location_activities = async (req,res)=>{
+exports.get_location_travel = async (req,res)=>{
     let {location} = req.body;
-    let activity = await Activity.findAll({
-        attributes: ["activity_category", "activity_name", "activity_price", "location", "company_id"],
+    let travel = await Travel.findAll({
+        attributes: ["travel_name", "location", "address", "content"],
         where: {
             "location": location 
         }
     });
-    if(activity.length){
+    if(travel.length){
         res.send({
             "success": true,
-            "data": activity
+            "data": travel
         });
     }
     else {
         res.send({
             "success": false,
-            "message": "해당 지역에 activity가 없습니다."
+            "message": "해당 지역에 여행지가 없습니다."
         });
     }
 };
 
-exports.get_activity_images = async (req,res)=>{
-    let {activity_name} = req.body;
-    let activity = await Activity.findOne({
+exports.get_travel_images = async (req,res)=>{
+    let {travel_name} = req.body;
+    let travel = await Travel.findOne({
         where: {
-            "activity_name": activity_name 
+            "travel_name": travel_name 
         }
     });
-    let images = await Activity_image.findAll({
+    let images = await Travel_image.findAll({
+        attributes:["image_url"],
         where: {
-            "activity_id": activity.id
+            "travel_id": travel.id
         }
     })
     console.log(images);

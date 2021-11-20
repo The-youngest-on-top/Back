@@ -31,6 +31,7 @@ class Travel extends Sequelize.Model {
             collate: 'utf8_general_ci'
         });
     }
+    static associate(db) {}
 }
 
 module.exports = Travel;
