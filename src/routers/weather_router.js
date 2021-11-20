@@ -137,35 +137,40 @@ router.get('/weathermap/:lat/:lng', (req,res)=>{
     let real = moment().format('DD');
     let mm = moment().format('MM');
     let yyyy = moment().format('YYYY');
-    let hours = moment().format('HH');
-    if(hours < 3){
-        dd = dd-1;
-        hours = 23;
-    }
-    else if(hours<6){
-        hours = '02';
-    }
-    else if(hours<9){
-        hours = '05';
-    }
-    else if(hours<12){
-        hours = '08';
-    }
-    else if(hours<15){
-        hours = 11;
-    }
-    else if(hours<18){
-        hours = 14;
-    }
-    else if(hours<21){
-        hours = 17;
-    }
+    //let hours = Number(moment().format('HH'));
+    let hours = '02';
+    // if(hours < 2){
+    //     dd = dd-1;
+    //     hours = 23;
+    // }
+    // else if(hours<5){
+    //     hours = '02';
+    // }
+    // else if(hours<8){
+    //     hours = '05';
+    // }
+    // else if(hours<11){
+    //     hours = '08';
+    // }
+    // else if(hours<14){
+    //     hours = 11;
+    // }
+    // else if(hours<17){
+    //     hours = 14;
+    // }
+    // else if(hours<20){
+    //     hours = 17;
+    // } 
+    // else if(hours<23){
+    //     hours = 20;
+    // }
     if(mm<10){
         mm = '0' +mm;
     }
     if(dd<10){
         dd = '0' +dd;
     }
+    console.log(`시간: ${hours}00`)
     var url = 'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst';
     var queryParams = '?' + encodeURIComponent('serviceKey') +`=${service_key.short_service_key}`; /* Service Key*/
     queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1'); /* */
@@ -182,8 +187,6 @@ router.get('/weathermap/:lat/:lng', (req,res)=>{
         encoding: null
     }, function (error, response, body) {
         if(error){
-            console.log('Status', response.statusCode);
-            console.log('Headers', JSON.stringify(response.headers));
             console.log(error);
             res.send(error);
         }
@@ -200,6 +203,12 @@ router.get('/weathermap/:lat/:lng', (req,res)=>{
         }
         date = `${yyyy}${mm}${real}`;
         console.log(date);
+        // if($('cmmMsgHeader').find(errMsg).text()){
+        //     res.send({
+        //         "success": false,
+        //         "message": `${$('cmmMsgHeader').find(returnAuthMsg).text()}`
+        //     })
+        // }
         $('item').each(function (idx){
             let fcst_date = $(this).find('fcstDate').text();
             let category =$(this).find('category').text();
