@@ -1,10 +1,9 @@
 const Company  = require('../models/company');
-const path = require('path');
 
 exports.signup_company = async (req,res)=>{
     let {company_id, password, company_name, company_contact, company_address, company_manager, activity_category} = req.body;
     let {account_number} = req.body;
-    let account_image = `${req.file.destination}/${req.file.filename}`;
+    let account_image = `${req.file.location}`;
     await Company.create({
         "id": company_id,
         "password": password,
