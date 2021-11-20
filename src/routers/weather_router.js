@@ -137,12 +137,14 @@ router.get('/weathermap/:lat/:lng', (req,res)=>{
     let real = moment().format('DD');
     let mm = moment().format('MM');
     let yyyy = moment().format('YYYY');
-    //let hours = Number(moment().format('HH'));
-    let hours = '02';
-    // if(hours < 2){
-    //     dd = dd-1;
-    //     hours = 23;
-    // }
+    let hours = Number(moment().format('HH'));
+    if(hours < 2){
+        dd = dd-1;
+        hours = 23;
+    }
+    else {
+        hours = '02';
+    }
     // else if(hours<5){
     //     hours = '02';
     // }

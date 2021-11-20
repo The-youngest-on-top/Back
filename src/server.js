@@ -3,6 +3,8 @@ const path    = require('path');
 const morgan  = require('morgan');
 const cors    = require("cors");
 const fs      =require('fs');
+require('dotenv').config();
+
 
 const { sequelize } = require('./models');
 
