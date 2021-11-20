@@ -38,3 +38,13 @@ exports.account_upload = multer({
     },
   })
 }, 'NONE');
+
+exports.travel_upload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: 'extreme-cbnu',
+    key: (req, file, cb) => {
+      cb(null, `travel_images/${Date.now()}_${path.basename(file.originalname)}`);
+    },
+  })
+}, 'NONE');
