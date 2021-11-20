@@ -6,7 +6,7 @@ const Company = require('../models/company');
 exports.add_activity = async (req,res)=> {
     let images = req.files;
     let data = req.body;
-    let license_image = `${images[0].location}`
+    let license_image = images[0].location
     await Activity.create({
         "activity_category": data.activity_category,
         "activity_name": data.activity_name,
