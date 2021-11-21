@@ -1,12 +1,13 @@
 const Activity = require('../models/activity');
 const Activity_image = require('../models/activity_image');
 const Company = require('../models/company');
-
+const Activity_time = require('../models/activity_time');
 
 exports.add_activity = async (req,res)=> {
     let images = req.files;
     let data = req.body;
-    let license_image = images[0].location
+    try{
+        let license_image = images[0].location
     await Activity.create({
         "activity_category": data.activity_category,
         "activity_name": data.activity_name,
@@ -32,41 +33,83 @@ exports.add_activity = async (req,res)=> {
         })
         console.log(images[i].filename);
     }
-    res.send(`activity 저장 성공`);
+    res.send({
+        "success": true,
+        "message": "activity 저장 성공"
+    });
+    } catch(err){
+        res.send({
+            "success": false,
+            "message": err
+        });
+    }
+    
 };
+
+exports.add_time = async (req,res) => {
+    let data = req.body;
+    let activity = await Activity.findOne({
+        attributes: ['id'],
+        where: {
+            "activity_name": data.activity_name,
+            "company_id":  data.company_id
+        }
+    })
+    
+}
 
 exports.get_activity = async (req,res)=>{
     let {activity_name, company_id} = req.body;
-    let activity = await Activity.findAll({
-        where: {
-            "activity_name": activity_name,
-            "company_id": company_id
-        }
-    });
-    console.log(activity);
-    res.send(activity);
-};
-
-exports.get_location_activities = async (req,res)=>{
-    let {location} = req.body;
-    let activity = await Activity.findAll({
-        attributes: ["activity_category", "activity_name", "activity_price", "location", "company_id"],
-        where: {
-            "location": location 
-        }
-    });
-    if(activity.length){
+    try{    
+        let activity = await Activity.findAll({
+            attributes: ["activity_category", "activity_name", "activity_price", "location", "company_id"],
+            where: {
+                "activity_name": activity_name,
+                "company_id": company_id
+            }
+        });
+        console.log(activity);
         res.send({
             "success": true,
             "data": activity
         });
-    }
-    else {
+    } catch(err){
         res.send({
             "success": false,
-            "message": "해당 지역에 activity가 없습니다."
+            "message": err
         });
     }
+    
+};
+
+exports.get_location_activities = async (req,res)=>{
+    let {location} = req.body;
+    try{
+        let activity = await Activity.findAll({
+            attributes: ["activity_category", "activity_name", "activity_price", "location", "company_id"],
+            where: {
+                "location": location 
+            }
+        });
+        if(activity.length){
+            res.send({
+                "success": true,
+                "data": activity
+            });
+        }
+        else {
+            res.send({
+                "success": false,
+                "message": "해당 지역에 activity가 없습니다."
+            });
+        }
+    } catch(err){
+        res.send({
+            "success": false,
+            "message": err
+        });
+    }
+    
 };
 
 exports.get_activity_images = async (req,res)=>{
@@ -77,12 +120,14 @@ exports.get_activity_images = async (req,res)=>{
         }
     });
     let images = await Activity_image.findAll({
+        attributes: ['image_url'],
         where: {
             "activity_id": activity.id
         }
     })
     console.log(images);
     res.send(images);
+
 }
 
 exports.delete_activity = async (req,res)=>{

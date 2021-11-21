@@ -4,7 +4,7 @@ const path = require('path');
 exports.signup_user = async (req,res) =>{
     let data = req.body;
     let profile_image = req.file.location;
-    console.log(req.body);
+    console.log(req);
     let e_result= await User.findOne({
         where:{
             "email": data.email
@@ -125,7 +125,6 @@ exports.login = async (req,res)=>{
                 "message": "존재하지 않는 비밀번호"
             })
         }
-
     }
 };
 
@@ -136,11 +135,11 @@ exports.get_profile_image = async (req,res)=>{
     let user_data= await User.findOne({
         attributes:['profile_image'],
         where:{
-            "user_id": user_id
+            "id": user_id
         }
     })
-    console.log(`${project_path}/${user_data.profile_image}`);
-    res.sendFile(`${project_path}/${user_data.profile_image}`);
+    console.log(user_data.profile_image);
+    res.send(user_data.profile_image);
 };
 
 exports.delete_user = async (req,res)=>{

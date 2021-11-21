@@ -33,6 +33,10 @@ class Company extends Sequelize.Model {
                 type: Sequelize.STRING(45),
                 allowNull: false
             },
+            bank_name:{
+                type: Sequelize.STRING(45),
+                allowNull: false
+            },
             account_number: {
                 type: Sequelize.STRING(45),
                 allowNull: false
