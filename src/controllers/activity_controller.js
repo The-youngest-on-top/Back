@@ -61,7 +61,14 @@ exports.add_time = async (req,res) => {
 exports.get_activities = async (req,res) =>{    
     try{
         let activities = await Activity.findAll({
-            attributes: ["activity_category", "activity_name", "activity_price", "location", "company_id"]
+            include: [
+                {
+                    model: Activity_image,
+                    attributes: ["image_url"],
+                    required:false
+                }
+            ],
+            attributes: ["id", "activity_category", "activity_name", "activity_price", "location", "company_id"],
         })
         console.log(activities);
         res.send({

@@ -40,6 +40,12 @@ class Activity extends Sequelize.Model {
     }
     static associate(db) {
         db.Activity.belongsTo(db.Company);
+        db.Activity.hasMany(db.Activity_image, {
+            onDelete: "cascade"
+        });
+        db.Activity.hasMany(db.Activity_time,{
+            onDelete: "cascade"
+        })
      }
 }
 

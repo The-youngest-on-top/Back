@@ -57,7 +57,11 @@ class Company extends Sequelize.Model {
             collate: 'utf8_general_ci'
         });
     }
-    static associate(db) {}
+    static associate(db) {
+        db.Company.hasMany(db.Activity, {
+            onDelete: "cascade"
+        });
+    }
 }
 
 module.exports = Company;
