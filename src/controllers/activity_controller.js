@@ -58,6 +58,24 @@ exports.add_time = async (req,res) => {
     
 }
 
+exports.get_activities = async (req,res) =>{
+    try{
+        let activities = await Activity.filndAll({
+            attributes: ["activity_category", "activity_name", "activity_price", "location", "company_id"]
+        })
+        console.log(activities);
+        res.send({
+            "success": true,
+            "data": activities
+        })
+    } catch(err){
+        res.send({
+            "success": false,
+            "message": err
+        });
+    }
+}
+
 exports.get_activity = async (req,res)=>{
     let {activity_name, company_id} = req.body;
     try{    
