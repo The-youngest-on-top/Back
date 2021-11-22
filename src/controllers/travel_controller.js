@@ -28,7 +28,10 @@ exports.add_travel = async (req,res)=> {
         })
         console.log(images[i].filename);
     }
-    res.send(`travel 저장 성공`);
+    res.send({
+        "success" : true,
+        "message": "travel 저장 성공"
+    });
 };
 
 exports.get_location_travel = async (req,res)=>{
