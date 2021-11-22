@@ -69,6 +69,7 @@ exports.signup_user = async (req,res) =>{
 exports.get_user = async (req,res)=>{
     let user_id = req.body.user_id;
     let result= await User.findAll({
+        attributes: ["id", "password", "profile_image", "nickname","name", "phone_number", "birthday", "email"],
         where:{
             "id": user_id
         }
