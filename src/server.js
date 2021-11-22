@@ -29,7 +29,7 @@ sequelize.sync({ force: false })
 app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded());
 //app.use(cors); //실제 서버 배포 시 IP를 설정해야됨.
 
 
