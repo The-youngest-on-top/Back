@@ -58,9 +58,9 @@ exports.add_time = async (req,res) => {
     
 }
 
-exports.get_activities = async (req,res) =>{
+exports.get_activities = async (req,res) =>{    
     try{
-        let activities = await Activity.filndAll({
+        let activities = await Activity.findAll({
             attributes: ["activity_category", "activity_name", "activity_price", "location", "company_id"]
         })
         console.log(activities);
