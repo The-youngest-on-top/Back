@@ -2,11 +2,6 @@ const express = require('express');
 const router = express.Router();
 
 const Axios = require('axios')
-const cheerio = require("cheerio");
-const request = require('request');
-const moment = require('moment');
-require('moment-timezone');
-moment.tz.setDefault("Asia/Seoul");
 //const land_fcst_location = require("../weather/mid_land_fcst_loctaion.json");
 //const ta_location = require("../weather/mid_ta_location.json");
 const xy_converter = require("../weather/xy_converter");
@@ -16,7 +11,6 @@ const cache = new CachedCall()
 const cacheError = 10000
 const dayjs = require('dayjs')
 const everyHour = min => () => dayjs().add(60 - min, 'm').startOf('m').minute(min) - Date.now()
-const serviceKey = process.env.short_service_key
 router.get('/', (req,res)=>{
     res.send('Server Open');
 });
@@ -37,17 +31,14 @@ router.get('/weathermap/:lat/:lng', async (req,res)=>{
     }
 })
 
-// const cachedFn = {
-//     getWeahterNow: cache({ getWeahterNow, cacheError, maxAge: everyHour(40) }),
-//     getForecast: cache({ getForecast, cacheError, maxAge: everyHour(45) })
-// }
+
 
 const getBaseDateTime = ({ minutes = 0, provide = 40 } = {}, dt = Date.now()) => {
     const pad = (n, pad = 2) => ('0'.repeat(pad) + n).slice(-pad)
     const date = new Date(dt - (provide * 60 * 1000)) // provide분 전
     return {
-      base_date: date.getFullYear() + pad(date.getMonth() + 1) + pad(date.getDate()),
-      base_time: pad(date.getHours()) + pad(minutes)
+        base_date: date.getFullYear() + pad(date.getMonth() + 1) + pad(date.getDate()),
+        base_time: pad(date.getHours()) + pad(minutes)
     }
 }
 
@@ -69,7 +60,7 @@ const getWeahterNow = async (nx, ny) => {
         if(element.category=="T1H") tem = element.obsrValue;
         if(element.category=="WSD") wsd = element.obsrValue;
     });
-    return {"tem": tem, "wsd": wsd};
+    return {"date": base_date, "time": base_time, "tem": tem, "wsd": wsd};
 }
 
 const getForecast = async (nx, ny) => {
@@ -83,6 +74,7 @@ const getForecast = async (nx, ny) => {
     queryParams += '&' + encodeURIComponent('base_time') + '=' + encodeURIComponent(`${base_time}`); /* */
     queryParams += '&' + encodeURIComponent('nx') + '=' + encodeURIComponent(`${nx}`); /* */
     queryParams += '&' + encodeURIComponent('ny') + '=' + encodeURIComponent(`${ny}`); /* */
+    console.log(url+queryParams);
     const { data } = await Axios.get(url+queryParams);
     if (!data.response) throw Error('getUltraSrtFcst 응답값 없음')
     let state = getState(data.response.body.items.item);
@@ -107,15 +99,19 @@ const weatherState = (ptyCode, skyCode) => {
 
 
 const getWeather = async (x, y) => {
-    //const { getWeahterNow, getForecast } = cachedFn
+    const { getWeahterNow, getForecast } = cachedFn
     const [weather, forecast] = await Promise.all([
       getWeahterNow(x, y),
-      getForecast(x, y)
+      getForecast(x, y),
     ])
-    console.log(forecast);
-    return {"tem":`${weather.tem} 도`,
-            "wsd": `${weather.wsd} m/s`, 
-            "state": forecast }
+    return {
+        "date": weather.date,
+        "time": weather.time,
+        "tem":`${weather.tem} 도`,
+        "wsd": `${weather.wsd} m/s`, 
+        "state": forecast 
+    }
+   
 }
 
 const getState = (data) => {
@@ -125,12 +121,15 @@ const getState = (data) => {
                 if(element.category=="PTY") {pty = element.fcstValue;}
                 if(element.category=="SKY"){
                     sky = element.fcstValue;
-                    state = weatherState(parseInt(pty),parseInt(sky));
-                    console.log(state);
-                    
+                    state = weatherState(parseInt(pty),parseInt(sky));     
                 }
         }
     });
     return state;
+}
+
+const cachedFn = {
+    getWeahterNow: cache({ getWeahterNow, cacheError, maxAge: everyHour(40) }),
+    getForecast: cache({ getForecast, cacheError, maxAge: everyHour(45) })
 }
 module.exports = router
