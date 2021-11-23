@@ -24,14 +24,18 @@ router.get('/weathermap/:lat/:lng', async (req,res)=>{
     try{
         let weather = await getWeather(nxy.x,nxy.y);
         //console.log(weather);
-        res.send(weather);
+        res.send({
+            "success": true,
+            "data": weather
+        });
     } catch(err){
         console.log(err);
-        res.send(err);
+        res.send({
+            "success": true,
+            "message": err
+        });
     }
 })
-
-
 
 const getBaseDateTime = ({ minutes = 0, provide = 40 } = {}, dt = Date.now()) => {
     const pad = (n, pad = 2) => ('0'.repeat(pad) + n).slice(-pad)
@@ -44,7 +48,7 @@ const getBaseDateTime = ({ minutes = 0, provide = 40 } = {}, dt = Date.now()) =>
 
 const getWeahterNow = async (nx, ny) => {
     let {base_date, base_time} = await getBaseDateTime()
-    let tem, wsd;
+    let tem, wsd,rain;
     var url = 'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst';
     var queryParams = '?' + encodeURIComponent('serviceKey') +`=${process.env.short_service_key}`; /* Service Key*/
     queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1'); /* */
@@ -59,8 +63,9 @@ const getWeahterNow = async (nx, ny) => {
     data.response.body.items.item.forEach(element => {
         if(element.category=="T1H") tem = element.obsrValue;
         if(element.category=="WSD") wsd = element.obsrValue;
+        if(element.category=="RN1") rain = element.obsrValue;
     });
-    return {"date": base_date, "time": base_time, "tem": tem, "wsd": wsd};
+    return {"date": base_date, "time": base_time, "tem": tem, "wsd": wsd, "rain":rain};
 }
 
 const getForecast = async (nx, ny) => {
@@ -78,13 +83,10 @@ const getForecast = async (nx, ny) => {
     const { data } = await Axios.get(url+queryParams);
     if (!data.response) throw Error('getUltraSrtFcst 응답값 없음')
     let state = getState(data.response.body.items.item);
-    console.log(state);
     return state;
 }
 
 const weatherState = (ptyCode, skyCode) => {
-    console.log(ptyCode);
-    console.log(skyCode);
     switch (ptyCode) {
       case 1: case 4: return 'rainy'
       case 2: return 'snowAndRainy'
@@ -107,8 +109,9 @@ const getWeather = async (x, y) => {
     return {
         "date": weather.date,
         "time": weather.time,
-        "tem":`${weather.tem} 도`,
-        "wsd": `${weather.wsd} m/s`, 
+        "tem":weather.tem,
+        "wsd": weather.wsd, 
+        "rain": weather.rain,
         "state": forecast 
     }
    
