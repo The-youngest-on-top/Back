@@ -3,12 +3,20 @@ const Sequelize = require('sequelize');
 class Activity_time extends Sequelize.Model {
     static init(sequelize){
         return super.init({
-            day: {
-                type: Sequelize.STRING(10),
+            date: {
+                type: Sequelize.STRING(30),
                 allowNull: false
             },
             hour:{
                 type: Sequelize.STRING(10),
+                allowNull:false
+            },
+            reservation:{
+                type: Sequelize.BOOLEAN,
+                defaultValue: false
+            },
+            activity_id:{
+                type: Sequelize.INTEGER,
                 allowNull:false
             }
         },  {
@@ -17,13 +25,16 @@ class Activity_time extends Sequelize.Model {
             underscored: true,
             modelName: 'Activity_time',
             tableName: 'activity_times',
-            paranoid: true,
+            paranoid: false,
             charset: 'utf8',
             collate: 'utf8_general_ci'
         });
     }
     static associate(db) {
-        db.Activity_time.belongsTo(db.Activity);
+        db.Activity_time.belongsTo(db.Activity,{
+            foreignKey: "activity_id",
+            onDelete: "cascade"
+        });
      }
 }
 
