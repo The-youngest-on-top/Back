@@ -69,60 +69,69 @@ const path = require('path');
 exports.signup_user = async (req,res) =>{
     let data = req.body;
     //let profile_image = req.file.location;
-    console.log(req);
-    let e_result= await User.findOne({
-        where:{
-            "email": data.email
+    //console.log(req);
+    try{
+        let e_result= await User.findOne({
+            where:{
+                "email": data.email
+            }
+        })
+        if(e_result){
+            res.send({
+                "success": false,
+                "message": "사용 불가 이메일"
+            })
         }
-    })
-    if(e_result){
+    
+        let p_result= await User.findOne({
+            where:{
+                "phone_number": data.phone_number
+            },
+        })
+        if(p_result){
+            res.send({
+                "success": false,
+                "message": "사용 불가 전화번호"
+            })
+        } 
+    
+        let n_result= await User.findOne({
+            where:{
+                "nickname": data.nickname
+            },
+        })
+        if(n_result){
+            res.send({
+                "success": false,
+                "message": "사용 불가 닉네임"
+            })
+        } 
+    
+        if(!(e_result || p_result || n_result))
+        {
+            await User.create({
+                "id":data.user_id,
+                "password":data.password,
+                "nickname": data.nickname,
+                "name": data.name,
+                "phone_number":data.phone_number,
+                "birthday":data.birthday,
+                "email": data.email
+            })
+            res.send({
+                "success": true,
+                "message": "회원가입 완료"
+            })
+            // res.send(`${data.user_id} 저장 성공`);
+        }   
+    }catch(err){
         res.send({
             "success": false,
-            "message": "사용 불가 이메일"
-        })
+            "message": err
+        });
     }
-
-    let p_result= await User.findOne({
-        where:{
-            "phone_number": data.phone_number
-        },
-    })
-    if(p_result){
-        res.send({
-            "success": false,
-            "message": "사용 불가 전화번호"
-        })
-    } 
-
-    let n_result= await User.findOne({
-        where:{
-            "nickname": data.nickname
-        },
-    })
-    if(n_result){
-        res.send({
-            "success": false,
-            "message": "사용 불가 닉네임"
-        })
-    } 
-
-    if(!(e_result || p_result || n_result))
-    {
-        await User.create({
-            "id":data.user_id,
-            "password":data.password,
-            "nickname": data.nickname,
-            "name": data.name,
-            "phone_number":data.phone_number,
-            "birthday":data.birthday,
-            "email": data.email
-        })
-        res.send({
-            "success": true,
-            "message": "회원가입 완료"
-        })
-        // res.send(`${data.user_id} 저장 성공`);
-    }   
+   
+    
 };
 
 exports.get_user = async (req,res)=>{
