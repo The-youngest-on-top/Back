@@ -157,10 +157,66 @@ exports.get_activity_images = async (req,res)=>{
 
 exports.delete_activity = async (req,res)=>{
     let {activity_name} = req.body;
-    Activity.destroy({
-        where:{
-            "activity_name": activity_name
-        }
-    })
-    console.log(`${activity_name} 삭제`)
+    try{
+        Activity.destroy({
+            where:{
+                "activity_name": activity_name
+            }
+        })
+        console.log(`${activity_name} 삭제`)
+        res.send({
+            "success": true,
+            "message": `${activity_name} 삭제`
+        });
+    } catch(err){
+        res.send({
+            "success": false,
+            "message": err
+        });
+    }
+    
 };
+
+exports.set_activity_times = async(req,res) =>{
+    let {activity_id, times} = req.body;
+    try{
+        await times.forEach(time => {
+            Activity_time.create({
+                "date": time.date,
+                "hour": time.hour,
+                "activity_id": activity_id
+            })
+        });
+        res.send({
+            "success": true,
+            "message": `activity_id:${activity_id} 예약 가능 시간 추가 성공`
+        });
+    } catch(err){
+        res.send({
+            "success": false,
+            "message": err
+        });
+    }
+}
+
+exports.get_activity_times = async(req,res)=>{
+    let {activity_id} = req.body;
+    let times;
+    try{
+        times = await Activity_time.findAll({
+            attributes:["date", "hour", "reservation"],
+            where:{
+                "activity_id": activity_id
+            }
+        })
+        res.send({
+            "success": true,
+            "data": times
+        })
+    } catch(err){
+        res.send({
+            "success": false,
+            "message": err
+        });
+    }
+}
