@@ -2,6 +2,7 @@ const Activity = require('../models/activity');
 const Activity_image = require('../models/activity_image');
 const Company = require('../models/company');
 const Activity_time = require('../models/activity_time');
+const { Op } = require('sequelize');
 
 exports.add_activity = async (req,res)=> {
     let images = req.files;
@@ -126,6 +127,61 @@ exports.get_location_activities = async (req,res)=>{
             res.send({
                 "success": false,
                 "message": "해당 지역에 activity가 없습니다."
+            });
+        }
+    } catch(err){
+        res.send({
+            "success": false,
+            "message": err
+        });
+    }
+    
+};
+
+exports.search_activities = async (req,res)=>{
+    let {data} = req.body;
+    try{
+        let activity = await Activity.findAll({
+            attributes: ["activity_category", "activity_name", "activity_price", "location", "address", "company_id"],
+            where: {
+                [Op.or]: [{ "location": data }, {"activity_category": data }, {"company_id": data }],
+                
+            }
+        });
+        Figure.findAll({
+            include: [
+               {
+                 model: Company,
+                 attributes: ["company_name"]
+               }
+            ],
+            where: {[Op.or]: [{ "location": data }, {"activity_category": data }, {"company_id": data }],},
+            transaction
+            // transaction을 적용했는데, 적용을 안하고자 한다면 이 부분은 빼면 된다.
+       });
+        // let activity2 = await Activity.findAll({
+        //     attributes: ["activity_category", "activity_name", "activity_price", "location", "company_id"],
+        //     where: {
+                
+        //     }
+        // });
+        // let activity3 = await Activity.findAll({
+        //     attributes: ["activity_category", "activity_name", "activity_price", "location", "company_id"],
+        //     where: {
+        //         "company_id": data
+        //     }
+        // });
+        console.log(activity);
+        if(activity.length){
+            res.send({
+                "success": true,
+                "data": activity
+            });
+        }
+        else {
+            res.send({
+                "success": false,
+                "message": "해당 검색결과가 없습니다."
             });
         }
     } catch(err){
