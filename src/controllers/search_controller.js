@@ -1,8 +1,7 @@
-const Activity = require('../models/activity');
+const Search = require('../models/search');
 const Activity_image = require('../models/activity_image');
 const Company = require('../models/company');
 const Activity_time = require('../models/activity_time');
-const { Op } = require('sequelize');
 
 exports.add_activity = async (req,res)=> {
     let images = req.files;
@@ -138,64 +137,6 @@ exports.get_location_activities = async (req,res)=>{
     
 };
 
-exports.search_activities = async (req,res)=>{
-    let {data} = req.body;
-    try{
-        let activity = await Activity.findAll({
-            include: [
-                { 
-                    model: Company,  
-                    attributes: ["company_name"] },
-                
-              ],
-            attributes: ["activity_category", "activity_name", "activity_price", "location", "address", "company_id"],
-            where: {
-                [Op.or]: [{ "location": data }, {"activity_category": data }],
-                
-            }
-        });
-        console.log(activity);
-        if(activity.length){
-            res.send({
-                "success": true,
-                "data": activity
-            });
-        }
-        else {
-
-            const result = await Activity.findAll({
-                include: [
-                  { model: Company,  
-                    where:{
-                        "company_name": data
-                    },
-                    attributes: ["company_name"] },
-                  
-                ],
-                attributes: ["activity_category", "activity_name", "activity_price", "location", "address", "company_id"],
-            });
-            if(result.length){
-                res.send({
-                    "success": true,
-                    "data": result
-                });
-            }
-            else{
-                res.send({
-                    "success": false,
-                    "message": "해당 검색결과가 없습니다."
-                });
-            }            
-        }    
-    } catch(err){
-        res.send({
-            "success": false,
-            "message": err
-        });
-    }
-    
-};
-
 exports.get_activity_images = async (req,res)=>{
     let {activity_name} = req.body;
     let activity = await Activity.findOne({
@@ -216,66 +157,10 @@ exports.get_activity_images = async (req,res)=>{
 
 exports.delete_activity = async (req,res)=>{
     let {activity_name} = req.body;
-    try{
-        Activity.destroy({
-            where:{
-                "activity_name": activity_name
-            }
-        })
-        console.log(`${activity_name} 삭제`)
-        res.send({
-            "success": true,
-            "message": `${activity_name} 삭제`
-        });
-    } catch(err){
-        res.send({
-            "success": false,
-            "message": err
-        });
-    }
-    
+    Activity.destroy({
+        where:{
+            "activity_name": activity_name
+        }
+    })
+    console.log(`${activity_name} 삭제`)
 };
-
-exports.set_activity_times = async(req,res) =>{
-    let {activity_id, times} = req.body;
-    try{
-        await times.forEach(time => {
-            Activity_time.create({
-                "date": time.date,
-                "hour": time.hour,
-                "activity_id": activity_id
-            })
-        });
-        res.send({
-            "success": true,
-            "message": `activity_id:${activity_id} 예약 가능 시간 추가 성공`
-        });
-    } catch(err){
-        res.send({
-            "success": false,
-            "message": err
-        });
-    }
-}
-
-exports.get_activity_times = async(req,res)=>{
-    let {activity_id} = req.body;
-    let times;
-    try{
-        times = await Activity_time.findAll({
-            attributes:["date", "hour", "reservation"],
-            where:{
-                "activity_id": activity_id,
-            }
-        })
-        res.send({
-            "success": true,
-            "data": times
-        })
-    } catch(err){
-        res.send({
-            "success": false,
-            "message": err
-        });
-    }
-}

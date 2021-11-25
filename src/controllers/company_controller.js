@@ -4,6 +4,7 @@ exports.signup_company = async (req,res)=>{
     let {company_id, password, company_name, company_contact, company_address, company_manager, activity_category} = req.body;
     let {account_number, bank_name} = req.body;
     let account_image = req.file.location;
+    console.log(req.body)
     try{
         await Company.create({
             "id": company_id,
@@ -22,10 +23,10 @@ exports.signup_company = async (req,res)=>{
             "message": `회원가입 완료`
         });
     } catch(err){
-        console.log(err.errors);
+        console.log(err);
         res.send({
             "success": false,
-            "message": err.errors
+            "message": err
         });
     }
     
