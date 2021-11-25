@@ -270,12 +270,13 @@ exports.modify_user = async (req,res)=>{
     let password = req.body.password;
     let nickname = req.body.nickname;
     try{
-        await User.update({password:password, nickname:nickname},{where:{user_id:user_id}});
+        await User.update({password:password, nickname:nickname},{where:{id:user_id}});
         res.send({
             "success": true,
             "message": "회원정보 수정 성공"
         });
     }catch (err){
+        console.log(err);
         res.send({
             "success": false,
             "message": err

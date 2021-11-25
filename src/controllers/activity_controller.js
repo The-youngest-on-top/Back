@@ -61,13 +61,13 @@ exports.add_time = async (req,res) => {
 exports.get_activities = async (req,res) =>{    
     try{
         let activities = await Activity.findAll({
-            // include: [
-            //     {
-            //         model: Activity_image,
-            //         attributes: ["image_url"],
-            //         required:false
-            //     }
-            // ],
+            include: [
+                {
+                    model: Activity_image,
+                    attributes: ["image_url"],
+                    required:false
+                }
+            ],
             attributes: ["activity_category", "activity_name", "activity_price", "location", "company_id"],
         })
         console.log(activities);
@@ -108,10 +108,23 @@ exports.get_activity = async (req,res)=>{
 };
 
 exports.get_location_activities = async (req,res)=>{
-    let {location} = req.body;
+    let {location} =  req.params;
+    console.log(location);
     try{
         let activity = await Activity.findAll({
-            attributes: ["activity_category", "activity_name", "activity_price", "location", "company_id"],
+            include: [
+                {
+                    model: Activity_image,
+                    attributes: ["image_url"],
+                    required:false
+                },
+                {
+                    model: Company,
+                    attributes: ["company_name"],
+                    required:false
+                }
+            ],
+            attributes: ["activity_category", "activity_name", "activity_price", "location"],
             where: {
                 "location": location 
             }
@@ -136,6 +149,47 @@ exports.get_location_activities = async (req,res)=>{
     }
     
 };
+
+exports.get_category_activities = async(req,res)=>{
+    let {category} = req.params;
+    try{
+        let activity = await Activity.findAll({
+            include: [
+                {
+                    model: Activity_image,
+                    attributes: ["image_url"],
+                    required:false
+                },
+                {
+                    model: Company,
+                    attributes: ["company_name"],
+                    required:false
+                }
+            ],
+            attributes: ["activity_category", "activity_name", "activity_price", "location"],
+            where: {
+                "activity_category": category 
+            }
+        });
+        if(activity.length){
+            res.send({
+                "success": true,
+                "data": activity
+            });
+        }
+        else {
+            res.send({
+                "success": false,
+                "message": "해당 카테고리에 activity가 없습니다."
+            });
+        }
+    } catch(err){
+        res.send({
+            "success": false,
+            "message": err
+        });
+    }
+}
 
 exports.get_activity_images = async (req,res)=>{
     let {activity_name} = req.body;
