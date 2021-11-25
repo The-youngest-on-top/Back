@@ -206,7 +206,7 @@ exports.get_activity_times = async(req,res)=>{
         times = await Activity_time.findAll({
             attributes:["date", "hour", "reservation"],
             where:{
-                "activity_id": activity_id
+                "activity_id": activity_id,
             }
         })
         res.send({
