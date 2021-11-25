@@ -124,19 +124,17 @@ const getState = (data) => {
     let pty, sky, state;
     let pty_flag=0, sky_flag=0;
     data.forEach(element => {
-        if(element.category=="PTY"&&pty_flag==0) {
-            pty = element.fcstValue;
-            pty_flag++;
-            console.log(pty);
+        if(element.baseDate==element.fcstDate){
+                if(element.category=="PTY"&&pty_flag==0) {
+                    pty = element.fcstValue;
+                    console.log(pty);
+                }
+                if(element.category=="SKY"){
+                    sky = element.fcstValue;
+                    console.log(sky);
+                    state = weatherState(parseInt(pty),parseInt(sky));     
+                }
         }
-        if(element.category=="SKY"&& sky_flag==0){
-            sky = element.fcstValue;
-            sky_flag++;
-            console.log(sky);
-            state = weatherState(parseInt(pty),parseInt(sky));     
-        }
-                
-        
     });
     console.log(`getState: ${state}`);
     return state;
