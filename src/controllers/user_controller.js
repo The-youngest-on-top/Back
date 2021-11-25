@@ -183,31 +183,38 @@ exports.login = async (req,res)=>{
     let data = req.body;
     // let user_id = req.body.user_id;
     // let password = req.body.password;
-    let result= await User.findOne({
-        where:{
-            "id": data.user_id
-        },
-    })
-    if(!result){
-        res.send({
-            "success": false,
-            "message": "존재하지 않는 아이디"
+    try{
+        let result= await User.findOne({
+            where:{
+                "id": data.user_id
+            },
         })
-    } else{
-        
-        
-        if(data.password==result.password){
-            res.send({
-                "success": true,
-                "message": `${result.id} 로그인 성공`
-            })
-        } else{
+        if(!result){
             res.send({
                 "success": false,
-                "message": "존재하지 않는 비밀번호"
+                "message": "존재하지 않는 아이디"
             })
+        } else{
+            if(data.password==result.password){
+                res.send({
+                    "success": true,
+                    "message": `${result.id} 로그인 성공`
+                })
+            } else{
+                res.send({
+                    "success": false,
+                    "message": "존재하지 않는 비밀번호"
+                })
+            }
         }
+    } catch(err){
+        console.log(err);
+        res.send({
+            "success": false,
+            "message": err
+        });
     }
+   
 };
 
 exports.set_profile_image = async(req,res)=>{
