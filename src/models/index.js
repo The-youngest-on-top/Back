@@ -57,4 +57,10 @@ Activity_image.associate(db);
 Activity_time.associate(db);
 Travel_image.associate(db);
 
+db.Company.hasMany(db.Activity, { as: "activities" });
+db.Activity.belongsTo(db.Company, {
+  foreignKey: "id",
+  as: "companys"
+});
+
 module.exports = db;

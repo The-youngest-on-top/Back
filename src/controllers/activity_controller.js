@@ -142,35 +142,18 @@ exports.search_activities = async (req,res)=>{
     let {data} = req.body;
     try{
         let activity = await Activity.findAll({
+            include: [
+                { 
+                    model: Company,  
+                    attributes: ["company_name"] },
+                
+              ],
             attributes: ["activity_category", "activity_name", "activity_price", "location", "address", "company_id"],
             where: {
-                [Op.or]: [{ "location": data }, {"activity_category": data }, {"company_id": data }],
+                [Op.or]: [{ "location": data }, {"activity_category": data }],
                 
             }
         });
-        Figure.findAll({
-            include: [
-               {
-                 model: Company,
-                 attributes: ["company_name"]
-               }
-            ],
-            where: {[Op.or]: [{ "location": data }, {"activity_category": data }, {"company_id": data }],},
-            transaction
-            // transaction을 적용했는데, 적용을 안하고자 한다면 이 부분은 빼면 된다.
-       });
-        // let activity2 = await Activity.findAll({
-        //     attributes: ["activity_category", "activity_name", "activity_price", "location", "company_id"],
-        //     where: {
-                
-        //     }
-        // });
-        // let activity3 = await Activity.findAll({
-        //     attributes: ["activity_category", "activity_name", "activity_price", "location", "company_id"],
-        //     where: {
-        //         "company_id": data
-        //     }
-        // });
         console.log(activity);
         if(activity.length){
             res.send({
@@ -179,11 +162,31 @@ exports.search_activities = async (req,res)=>{
             });
         }
         else {
-            res.send({
-                "success": false,
-                "message": "해당 검색결과가 없습니다."
+
+            const result = await Activity.findAll({
+                include: [
+                  { model: Company,  
+                    where:{
+                        "company_name": data
+                    },
+                    attributes: ["company_name"] },
+                  
+                ],
+                attributes: ["activity_category", "activity_name", "activity_price", "location", "address", "company_id"],
             });
-        }
+            if(result.length){
+                res.send({
+                    "success": true,
+                    "data": result
+                });
+            }
+            else{
+                res.send({
+                    "success": false,
+                    "message": "해당 검색결과가 없습니다."
+                });
+            }            
+        }    
     } catch(err){
         res.send({
             "success": false,
