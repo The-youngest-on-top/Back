@@ -232,8 +232,7 @@ exports.search_activities = async (req,res)=>{
                     "message": "해당 검색결과가 없습니다."
                 });
             }            
-        }    
-    } catch(err){
+        } catch(err){
         res.send({
             "success": false,
             "message": err

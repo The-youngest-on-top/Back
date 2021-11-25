@@ -1,5 +1,5 @@
 const User  = require('../models/user');
-const path = require('path');
+
 
 exports.signup_user = async (req,res) =>{
     let data = req.body;
@@ -137,12 +137,13 @@ exports.signup_user = async (req,res) =>{
 // };
 
 exports.get_user = async (req,res)=>{
-    let user_id = req.params.user_id;
+    let {user_id} = req.params;
+    console.log(user_id);
     try{
-        let result= await User.findAll({
+        let result= await User.findOne({
             attributes: ["id", "password", "profile_image", "nickname","name", "phone_number", "birthday", "email"],
             where:{
-                "id": user_id
+                id : user_id
             }
         })
         console.log(result);
@@ -151,9 +152,10 @@ exports.get_user = async (req,res)=>{
             "data": result
         });
     } catch(err){
+        console.log(err);
         res.send({
             "success": false,
-            "message": err
+            "message": err.message
         });
     }
     
