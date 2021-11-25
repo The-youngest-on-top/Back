@@ -8,6 +8,7 @@ router.get('/activities', controller.get_activities);
 router.get('/activity', controller.get_activity);
 router.get('/activity/location/:location', controller.get_location_activities);
 router.get('/activity/category/:category', controller.get_category_activities);
+router.get('/activity/search', controller.search_activities);
 router.get('/activity/images', controller.get_activity_images);
 router.delete('/activity', controller.delete_activity);
 router.post('/activity/times', controller.set_activity_times);

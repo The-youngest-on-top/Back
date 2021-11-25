@@ -1,0 +1,40 @@
+const Sequelize = require('sequelize');
+
+class Search extends Sequelize.Model {
+    static init(sequelize){
+        return super.init({
+            activity_category: {
+                type: Sequelize.STRING(45),
+                allowNull: false
+            },
+            location:{
+                type: Sequelize.STRING(20),
+                allowNull: false
+            },
+            company_id:{
+                type: Sequelize.STRING(45),
+                allowNull: false
+            },
+        },  {
+            sequelize,
+            timestamps: true,
+            underscored: true,
+            modelName: 'Search',
+            tableName: 'searchs',
+            paranoid: true,
+            charset: 'utf8',
+            collate: 'utf8_general_ci'
+        });
+    }
+    static associate(db) {
+        // db.Activity.belongsTo(db.Company);
+        // db.Activity.hasMany(db.Activity_image, {
+        //     onDelete: "cascade"
+        // });
+        // db.Activity.hasMany(db.Activity_time,{
+        //     onDelete: "cascade"
+        // })
+     }
+}
+
+module.exports = Search;

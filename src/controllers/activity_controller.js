@@ -2,6 +2,7 @@ const Activity = require('../models/activity');
 const Activity_image = require('../models/activity_image');
 const Company = require('../models/company');
 const Activity_time = require('../models/activity_time');
+const { Op } = require('sequelize');
 
 exports.add_activity = async (req,res)=> {
     let images = req.files;
@@ -190,6 +191,55 @@ exports.get_category_activities = async(req,res)=>{
         });
     }
 }
+
+exports.search_activities = async (req,res)=>{
+    let {data} = req.body;
+    try{
+        let activity = await Activity.findAll({
+            include: [
+                { 
+                    model: Company,  
+                    attributes: ["company_name"] },
+                
+              ],
+            attributes: ["activity_category", "activity_name", "activity_price", "location", "address", "company_id"],
+            where: {
+                [Op.or]: [{ "location": data }, {"activity_category": data }],
+                
+            }
+        });
+        console.log(activity);
+            const result = await Activity.findAll({
+                include: [
+                  { model: Company,  
+                    where:{
+                        "company_name": data
+                    },
+                    attributes: ["company_name"] },
+                  
+                ],
+                attributes: ["activity_category", "activity_name", "activity_price", "location", "address", "company_id"],
+            });
+            if(result.length){
+                res.send({
+                    "success": true,
+                    "data": result
+                });
+            }
+            else{
+                res.send({
+                    "success": false,
+                    "message": "해당 검색결과가 없습니다."
+                });
+            }            
+        }    
+    } catch(err){
+        res.send({
+            "success": false,
+            "message": err
+        });
+    }
+};
 
 exports.get_activity_images = async (req,res)=>{
     let {activity_name} = req.body;
