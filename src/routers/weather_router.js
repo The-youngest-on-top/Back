@@ -58,6 +58,7 @@ const getWeahterNow = async (nx, ny) => {
     queryParams += '&' + encodeURIComponent('base_time') + '=' + encodeURIComponent(`${base_time}`); /* */
     queryParams += '&' + encodeURIComponent('nx') + '=' + encodeURIComponent(`${nx}`); /* */
     queryParams += '&' + encodeURIComponent('ny') + '=' + encodeURIComponent(`${ny}`); /* */
+    console.log(url+queryParams);
     const { data } = await Axios.get(url+queryParams);
     if (!data.response) throw Error('getUltraSrtNcst 응답값 없음')
     data.response.body.items.item.forEach(element => {
@@ -82,7 +83,9 @@ const getForecast = async (nx, ny) => {
     console.log(url+queryParams);
     const { data } = await Axios.get(url+queryParams);
     if (!data.response) throw Error('getUltraSrtFcst 응답값 없음')
+    console.log(data.response.body.items.item);
     let state = getState(data.response.body.items.item);
+    console.log(state);
     return state;
 }
 
@@ -119,15 +122,21 @@ const getWeather = async (x, y) => {
 
 const getState = (data) => {
     let pty, sky, state;
+    let pty_flag=0, sky_flag=0;
     data.forEach(element => {
         if(element.baseDate==element.fcstDate){
-                if(element.category=="PTY") {pty = element.fcstValue;}
+                if(element.category=="PTY"&&pty_flag==0) {
+                    pty = element.fcstValue;
+                    console.log(pty);
+                }
                 if(element.category=="SKY"){
                     sky = element.fcstValue;
+                    console.log(sky);
                     state = weatherState(parseInt(pty),parseInt(sky));     
                 }
         }
     });
+    console.log(`getState: ${state}`);
     return state;
 }
 
