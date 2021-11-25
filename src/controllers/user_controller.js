@@ -183,6 +183,7 @@ exports.login = async (req,res)=>{
     let data = req.body;
     // let user_id = req.body.user_id;
     // let password = req.body.password;
+    console.log(data);
     try{
         let result= await User.findOne({
             where:{
@@ -190,21 +191,21 @@ exports.login = async (req,res)=>{
             },
         })
         if(!result){
-            res.send({
+            res.status(404).send({
                 "success": false,
                 "message": "존재하지 않는 아이디"
-            })
+            });
         } else{
             if(data.password==result.password){
                 res.send({
                     "success": true,
                     "message": `${result.id} 로그인 성공`
-                })
+                });
             } else{
-                res.send({
+                res.status(404).send({
                     "success": false,
                     "message": "존재하지 않는 비밀번호"
-                })
+                });
             }
         }
     } catch(err){
