@@ -13,6 +13,7 @@ const coupon_router = require('./routers/coupon_router');
 const heart_router = require('./routers/heart_router');
 const company_router = require('./routers/company_router');
 const activity_router = require('./routers/activity_router');
+const review_router = require('./routers/review_router');
 const travel_router = require('./routers/travel_router');
 const app = express();
 
@@ -40,6 +41,7 @@ app.use(coupon_router);
 app.use(heart_router);
 app.use(company_router);
 app.use(activity_router);
+app.use(review_router);
 app.use(travel_router);
 
 app.listen(port, () => {
