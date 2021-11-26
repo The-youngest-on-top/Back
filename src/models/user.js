@@ -55,6 +55,7 @@ class User extends Sequelize.Model {
             foreignKey: "user_id",
             onDelete: "cascade"
         })
+        db.User.hasMany(db.Reservation)
     }
 };
 

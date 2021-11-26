@@ -35,6 +35,10 @@ class Activity_time extends Sequelize.Model {
             foreignKey: "activity_id",
             onDelete: "cascade"
         });
+        db.Activity_time.hasMany(db.Reservation,{
+            foreignKey: "activity_time_id",
+            onDelete: "cascade"
+        });
      }
 }
 
