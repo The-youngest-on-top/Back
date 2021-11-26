@@ -162,7 +162,7 @@ exports.get_user = async (req,res)=>{
 };
 
 exports.check_id = async (req,res)=>{
-    let user_id = req.body.user_id;
+    let user_id = req.params.user_id;
     let result= await User.findOne({
         where:{
             "id": user_id

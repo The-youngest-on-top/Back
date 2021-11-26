@@ -12,7 +12,7 @@ router.get('/user/profile_image', controller.get_profile_image);
 router.post('/user/profile_image', profile_upload.single('profile_image'),controller.set_profile_image);
 router.delete('/user', controller.delete_user);
 router.patch('/user', controller.modify_user);
-router.get('/user/check_id', controller.check_id);
+router.get('/user/check_id/:user_id', controller.check_id);
 
 
 module.exports = router;
