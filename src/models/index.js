@@ -13,6 +13,7 @@ const Travel = require('./travel');
 const Travel_image = require('./travel_image');
 const Activity_image = require('./activity_image');
 const Activity_time = require('./activity_time');
+const Reservation = require("./reservation");
 
 const env = process.env.NODE_ENV || 'development';
 const config = require('../config/config')[env];
@@ -32,10 +33,10 @@ db.Travel = Travel;
 db.Activity_image = Activity_image;
 db.Activity_time = Activity_time;
 db.Travel_image = Travel_image;
+db.Reservation = Reservation;
 
 User.init(sequelize);
 Coupon.init(sequelize);
-//Reserve.init(sequelize);
 Heart.init(sequelize);
 Company.init(sequelize);
 Activity.init(sequelize);
@@ -44,10 +45,11 @@ Travel.init(sequelize);
 Activity_image.init(sequelize);
 Activity_time.init(sequelize);
 Travel_image.init(sequelize);
+Reservation.init(sequelize);
 
 User.associate(db);
 Coupon.associate(db);
-//Reserve.associate(db);
+Reservation.associate(db);
 Heart.associate(db);
 Company.associate(db);
 Activity.associate(db);
