@@ -2,6 +2,7 @@ const Activity = require('../models/activity');
 const Activity_image = require('../models/activity_image');
 const Company = require('../models/company');
 const Activity_time = require('../models/activity_time');
+var url = require('url');
 const { Op } = require('sequelize');
 const { Review } = require('../models');
 
@@ -86,21 +87,33 @@ exports.get_activities = async (req,res) =>{
 }
 
 exports.get_activity = async (req,res)=>{
-    let {activity_name, company_id} = req.body;
+    query_data = url.parse(req.url, true).query;
+    let activity_id  = query_data.id;
     try{    
-        let activity = await Activity.findAll({
-            attributes: ["activity_category", "activity_name", "activity_price", "location", "company_id"],
+        let activity = await Activity.findOne({
+            include: [
+                {
+                    model: Activity_image,
+                    attributes: ["image_url"],
+                    required:false
+                },
+                {
+                    model: Company,
+                    attributes: ["company_name"],
+                    required:false
+                }
+            ],
+            attributes: ["id","activity_category", "activity_name", "activity_price", "location", "company_id"],
             where: {
-                "activity_name": activity_name,
-                "company_id": company_id
+                "id": activity_id,
             }
         });
-        console.log(activity);
         res.send({
             "success": true,
             "data": activity
         });
     } catch(err){
+        console.log(err);
         res.send({
             "success": false,
             "message": err
@@ -126,7 +139,7 @@ exports.get_location_activities = async (req,res)=>{
                     required:false
                 }
             ],
-            attributes: ["activity_category", "activity_name", "activity_price", "location"],
+            attributes: ["id","activity_category", "activity_name", "activity_price", "location"],
             where: {
                 "location": location 
             }
@@ -144,6 +157,7 @@ exports.get_location_activities = async (req,res)=>{
             });
         }
     } catch(err){
+        console.log(err);
         res.send({
             "success": false,
             "message": err
@@ -186,6 +200,7 @@ exports.get_category_activities = async(req,res)=>{
             });
         }
     } catch(err){
+        console.log(err);
         res.send({
             "success": false,
             "message": err.message
@@ -194,7 +209,8 @@ exports.get_category_activities = async(req,res)=>{
 }
 
 exports.search_activities = async (req,res)=>{
-    let {data} = req.body;
+    query_data = url.parse(req.url,ture).query;
+    let data = query_data.keyword;
     try{
         let activity = await Activity.findAll({
             include: [
@@ -240,10 +256,11 @@ exports.search_activities = async (req,res)=>{
                 });
             }            
         } catch(err){
-        res.send({
-            "success": false,
-            "message": err
-        });
+            console.log(err);
+            res.send({
+                "success": false,
+                "message": err
+            });
     }
 };
 
@@ -310,7 +327,8 @@ exports.set_activity_times = async(req,res) =>{
 }
 
 exports.get_activity_times = async(req,res)=>{
-    let {activity_id} = req.body;
+    query_data = url.parse(req.url, true).query
+    let activity_id = query_data.id;
     let times;
     try{
         times = await Activity_time.findAll({

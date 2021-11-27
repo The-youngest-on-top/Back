@@ -16,7 +16,7 @@ class Travel extends Sequelize.Model {
                 allowNull: false
             },
             content:{
-                type: Sequelize.STRING(45),
+                type: Sequelize.STRING(200),
                 allowNull: false
             },
             

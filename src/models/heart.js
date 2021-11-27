@@ -1,5 +1,4 @@
 const Sequelize = require('sequelize');
-const db = require("./index")
 class Heart extends Sequelize.Model {
     static init(sequelize) {
         return super.init({
