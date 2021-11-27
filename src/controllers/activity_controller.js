@@ -3,6 +3,7 @@ const Activity_image = require('../models/activity_image');
 const Company = require('../models/company');
 const Activity_time = require('../models/activity_time');
 const { Op } = require('sequelize');
+const { Review } = require('../models');
 
 exports.add_activity = async (req,res)=> {
     let images = req.files;
@@ -187,7 +188,7 @@ exports.get_category_activities = async(req,res)=>{
     } catch(err){
         res.send({
             "success": false,
-            "message": err
+            "message": err.message
         });
     }
 }
@@ -209,7 +210,7 @@ exports.search_activities = async (req,res)=>{
             }
         });
         console.log(activity);
-            const result = await Activity.findAll({
+            const company = await Activity.findAll({
                 include: [
                   { model: Company,  
                     where:{
@@ -220,10 +221,16 @@ exports.search_activities = async (req,res)=>{
                 ],
                 attributes: ["activity_category", "activity_name", "activity_price", "location", "address", "company_id"],
             });
-            if(result.length){
+            if(company.length){
                 res.send({
                     "success": true,
-                    "data": result
+                    "data": company
+                });
+            }
+            else if(activity.length){
+                res.send({
+                    "success": true,
+                    "data": activity
                 });
             }
             else{

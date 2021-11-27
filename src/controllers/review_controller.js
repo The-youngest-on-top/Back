@@ -1,11 +1,11 @@
 const Review = require('../models/review');
 const User = require('../models/user');
 const Activity = require('../models/activity');
+const url = require('url');
 const { Op } = require('sequelize');
 
 exports.add_review = async (req,res)=> {
     let data = req.body;
-    console.log(data);
     try{
         await Review.create({
             "content": data.content,
@@ -25,4 +25,72 @@ exports.add_review = async (req,res)=> {
         });
     }
     
+};
+
+exports.get_review = async (req,res)=>{
+    let data = url.parse(req.url, true).query;
+    let activity_id = data.activity_id;
+    try{
+        let result= await Review.findAll({
+            where:{
+                "activity_id": activity_id
+            },
+            attributes: ["content", "star", "user_id", "activity_id"],
+        })
+        console.log(result);
+        if(result.length){
+            res.send({
+                "success": true,
+                "data": result
+            });
+        }else{
+            res.send({
+                "success": false,
+                "message": "해당 액티비티의 리뷰가 없습니다."
+            });
+        }
+    } catch(err){
+        res.send({
+            "success": false,
+            "message": err
+        });
+    }
+};
+
+exports.get_star_avg = async (req,res)=>{
+    let data = url.parse(req.url, true).query;
+    let sum = 0;
+    let activity_id = data.activity_id;
+    try{
+        let result= await Review.findAll({
+            where:{
+                "activity_id": activity_id
+            },
+            attributes: ["star"],
+        })
+        result.forEach(element => {
+            sum+= element.star;
+            console.log(element.star);
+        });
+        
+        const avg = sum/result.length;
+        console.log(avg);
+        if(result.length){
+            res.send({
+                "success": true,
+                "data": avg
+            });
+        }else{
+            res.send({
+                "success": false,
+                "message": "해당 액티비티의 리뷰가 없습니다."
+            });
+        }
+    } catch(err){
+        console.log(err);
+        res.send({
+            "success": false,
+            "message": err.message
+        });
+    }
 };
