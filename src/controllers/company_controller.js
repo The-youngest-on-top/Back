@@ -34,8 +34,8 @@ exports.signup_company = async (req,res)=>{
 };
 
 exports.get_company = async (req,res)=>{
-    query_data = url.parse(req.url, true).query;
-    let company_id = query_data.id;
+    data = url.parse(req.url, true).query;
+    let company_id = data.id;
     try{
         let result = await Company.findAll({
             attributes : ["id", "password", "company_name", "company_contact", "company_manager", "company_address", "activity_category","bank_name", "account_number"],
@@ -58,6 +58,7 @@ exports.get_company = async (req,res)=>{
             }
         );
     } catch(err){
+        console.log(err);
         res.send(
             {
                 "success": false,

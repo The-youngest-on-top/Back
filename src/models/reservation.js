@@ -22,6 +22,10 @@ class Reservation extends Sequelize.Model {
             activity_time_id: {
                 type: Sequelize.INTEGER,
                 allowNull:false
+            },
+            activity_id:{
+                type: Sequelize.INTEGER,
+                allowNull:false
             }
         },  {
             sequelize,
@@ -38,6 +42,10 @@ class Reservation extends Sequelize.Model {
         db.Reservation.belongsTo(db.Activity_time)
         db.Reservation.belongsTo(db.User,{
             foreignKey: "user_id",
+            onDelete: "cascade"
+        })
+        db.Reservation.belongsTo(db.Activity,{
+            foreignKey: "activity_id",
             onDelete: "cascade"
         })
      }
