@@ -54,7 +54,10 @@ class User extends Sequelize.Model {
         db.User.hasMany(db.Coupon, {
             foreignKey: "user_id",
             onDelete: "cascade"
-        })
+        });
+        db.User.hasMany(db.Review, {
+            onDelete: "cascade"
+        });
         db.User.hasMany(db.Reservation)
     }
 };

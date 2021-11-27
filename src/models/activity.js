@@ -51,6 +51,9 @@ class Activity extends Sequelize.Model {
             onDelete: "cascade"
         });
         db.Activity.hasMany(db.Reservation);
+        db.Activity.hasMany(db.Review, {
+            onDelete: "cascade"
+        });
      }
 }
 
