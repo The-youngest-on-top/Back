@@ -49,7 +49,8 @@ class Activity extends Sequelize.Model {
         });
         db.Activity.hasMany(db.Activity_time,{
             onDelete: "cascade"
-        })
+        });
+        db.Activity.hasMany(db.Reservation);
      }
 }
 

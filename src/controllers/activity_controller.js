@@ -70,7 +70,7 @@ exports.get_activities = async (req,res) =>{
                     required:false
                 }
             ],
-            attributes: ["activity_category", "activity_name", "activity_price", "location", "company_id"],
+            attributes: ["activity_category", "activity_name", "activity_price", "location", "created_at"],
         })
         console.log(activities);
         res.send({
@@ -86,8 +86,8 @@ exports.get_activities = async (req,res) =>{
 }
 
 exports.get_activity = async (req,res)=>{
-    query_data = url.parse(req.url, true).query;
-    let activity_id  = query_data.id;
+    data = url.parse(req.url, true).query;
+    let activity_id  = data.id;
     try{    
         let activity = await Activity.findOne({
             include: [
@@ -102,7 +102,7 @@ exports.get_activity = async (req,res)=>{
                     required:false
                 }
             ],
-            attributes: ["id","activity_category", "activity_name", "activity_price", "location", "company_id"],
+            attributes: ["id","activity_category", "activity_name", "activity_price", "location", "created_at"],
             where: {
                 "id": activity_id,
             }
@@ -138,7 +138,7 @@ exports.get_location_activities = async (req,res)=>{
                     required:false
                 }
             ],
-            attributes: ["id","activity_category", "activity_name", "activity_price", "location"],
+            attributes: ["id","activity_category", "activity_name", "activity_price", "location", "created_at"],
             where: {
                 "location": location 
             }
@@ -181,7 +181,7 @@ exports.get_category_activities = async(req,res)=>{
                     required:false
                 }
             ],
-            attributes: ["activity_category", "activity_name", "activity_price", "location"],
+            attributes: ["activity_category", "activity_name", "activity_price", "location",  "created_at"],
             where: {
                 "activity_category": category 
             }
@@ -208,8 +208,8 @@ exports.get_category_activities = async(req,res)=>{
 }
 
 exports.search_activities = async (req,res)=>{
-    query_data = url.parse(req.url,ture).query;
-    let data = query_data.keyword;
+    data = url.parse(req.url,ture).query;
+    let data = data.keyword;
     try{
         let activity = await Activity.findAll({
             include: [
@@ -320,8 +320,8 @@ exports.set_activity_times = async(req,res) =>{
 }
 
 exports.get_activity_times = async(req,res)=>{
-    query_data = url.parse(req.url, true).query
-    let activity_id = query_data.id;
+    data = url.parse(req.url, true).query
+    let activity_id = data.id;
     let times;
     try{
         times = await Activity_time.findAll({
