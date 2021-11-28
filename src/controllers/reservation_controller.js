@@ -1,20 +1,44 @@
 const Reservation = require('../models/reservation');
+const Activity_time = require('../models/activity_time');
+const Activity_image = require('../models/activity_image');
+const Company = require('../models/company');
 const url = require('url');
+const Activity = require('../models/activity');
 exports.add_reservation = async (req,res) => {
     let {activity_id,activity_time_id, user_id, payment, people} = req.body
     try{
-        Reservation.create({
-            "payment": payment,
-            "people": people,
-            "user_id": user_id,
-            "activity_time_id": activity_time_id,
-            "activity_id": activity_id,
-            "payment_status": true
-        });
-        res.send({
-            "success": true,
-            "message": "예약 추가 성공"
-        });
+        let time = await Activity_time.findOne({
+            attributes: ["reservation"],
+            where:{
+                id : activity_time_id
+            }
+        })
+        if(time.reservation){
+            res.send({
+                "success": false,
+                "message": "예약이 불가능한 시간대"
+            })
+        } else {
+            await Reservation.create({
+                "payment": payment,
+                "people": people,
+                "user_id": user_id,
+                "activity_time_id": activity_time_id,
+                "activity_id": activity_id,
+                "payment_status": true
+            });
+            await Activity_time.update({
+                "reservation": true
+            },{
+                where:{
+                    "id": activity_time_id
+                }
+            });
+            res.send({
+                "success": true,
+                "message": "예약 추가 성공"
+            });
+        }
     } catch(err){
         res.send({
             "success": false,
@@ -50,7 +74,7 @@ exports.get_orderlist = async(req,res) => {
     let data = url.parse(req.url, true).query;
     let user_id = data.id;
     try{
-        result = Reservation.findAll({
+        result = await Reservation.findAll({
             include:[
                 {
                     model: Activity_time,
@@ -70,12 +94,12 @@ exports.get_orderlist = async(req,res) => {
                             required:false
                         }
                     ],
-                    attributes: ["activity_category", "activity_name", "activity_price", "location"]
+                    attributes: ["id", "activity_name"]
                 }
             ],
             attributes: ["id", "payment","people"],
             where:{
-                payment_statue: true,
+                payment_status: true,
                 user_id: user_id
             }
         });
@@ -91,18 +115,19 @@ exports.get_orderlist = async(req,res) => {
             });
         }
     } catch(err){
+        console.log(err);
         res.send({
             "success": false,
-            "message": err
+            "message": err.message
         });
     }
 }
 
-exports.get_cart = async(req,res) => {
+exports.get_carts = async(req,res) => {
     let data = url.parse(req.url, true).query;
     let user_id = data.id;
     try{
-        result = Reservation.findAll({
+        result = await Reservation.findAll({
             include:[
                 {
                     model: Activity_time,
@@ -122,12 +147,12 @@ exports.get_cart = async(req,res) => {
                             required:false
                         }
                     ],
-                    attributes: ["activity_category", "activity_name", "activity_price", "location"]
+                    attributes: ["id", "activity_name"]
                 }
             ],
             attributes: ["id", "payment","people"],
             where:{
-                payment_statue: false,
+                payment_status: false,
                 user_id: user_id
             }
         });
@@ -139,7 +164,7 @@ exports.get_cart = async(req,res) => {
         } else{
             res.send({
                 "success": false,
-                "message": "해당 유저의 예약이 없습니다."
+                "message": "해당 유저의 장바구니 내역이 없습니다."
             });
         }
     } catch(err){
@@ -150,11 +175,11 @@ exports.get_cart = async(req,res) => {
     }
 }
 
-exports.get_activity_reservation = async(req,res) => {
+exports.get_activity_reservations = async(req,res) => {
     let data = url.parse(req.url, true).query;
     let activity_id = data.id;
     try{
-        result = Reservation.findAll({
+        result = await Reservation.findAll({
             include:[
                 {
                     model: Activity_time,
@@ -174,7 +199,7 @@ exports.get_activity_reservation = async(req,res) => {
                             required:false
                         }
                     ],
-                    attributes: ["activity_category", "activity_name", "activity_price", "location"]
+                    attributes: ["id", "activity_name"]
                 }
             ],
             attributes: ["id", "payment","people"],

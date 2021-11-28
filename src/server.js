@@ -15,6 +15,7 @@ const company_router = require('./routers/company_router');
 const activity_router = require('./routers/activity_router');
 const review_router = require('./routers/review_router');
 const travel_router = require('./routers/travel_router');
+const reservation_router = require('./routers/reservation_router');
 const app = express();
 
 const port = process.env.PORT || 3003;
@@ -43,6 +44,7 @@ app.use(company_router);
 app.use(activity_router);
 app.use(review_router);
 app.use(travel_router);
+app.use(reservation_router);
 
 app.listen(port, () => {
     // var account_images = './images/account_images';
