@@ -1,7 +1,9 @@
 const Heart  = require('../models/heart');
 const User = require('../models/user');
+const Company = require('../models/company');
 const Activity = require('../models/activity');
-const path = require('path');
+const Activity_image = require('../models/activity_image');
+const url = require('url');
 
 
 
@@ -26,20 +28,52 @@ exports.add_heart = async (req,res) =>{
     
 };
 exports.get_hearts = async (req,res)=>{
-    let user_id = req.body.user_id;
-    console.log(user_id);
-    let result= await Heart.findAll({
-        include: [
-            {
-              model: Activity
+    let {id} = url.parse(req.url, true).query;
+    let user_id = id;
+    try{
+        let result= await Heart.findAll({
+            include: [
+                {
+                  model: Activity,
+                  include: [
+                    {
+                        model : Activity_image,
+                        attributes: ["image_url"]
+                    },
+                    {
+                        model: Company,
+                        attributes: ["company_name"],
+                        required:false
+                    }
+                  ],
+                  attributes: ["activity_name"]
+                }
+             ],
+             attributes: ["activity_id"],
+            where:{
+                "user_id": user_id
             }
-         ],
-        where:{
-            "user_id": user_id
+        })
+        if(result){
+            res.send({
+                "success": true,
+                "data": result
+            });
+        }else {
+            res.send({
+                "success": false,
+                "message": "찜 내역이 없습니다."
+            });
         }
-    })
-    console.log(result);
-    res.send(result);
+        
+    } catch(err){
+        console.log(err);
+        res.send({
+            "success": false,
+            "message": err.message
+        });
+    }
+    
 };
 
 exports.delete_heart = async (req,res)=>{
