@@ -72,6 +72,7 @@ exports.get_activities = async (req,res) =>{
             ],
             attributes: ["activity_category", "activity_name", "activity_price", "location", "created_at"],
         })
+        console.log(activities.created_at);
         console.log(activities);
         res.send({
             "success": true,
@@ -187,6 +188,7 @@ exports.get_category_activities = async(req,res)=>{
             }
         });
         if(activity.length){
+           
             res.send({
                 "success": true,
                 "data": activity
