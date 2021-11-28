@@ -69,6 +69,43 @@ exports.get_company = async (req,res)=>{
     
 };
 
+exports.modify_company = async (req,res)=>{
+    let data = req.body;
+    console.log(data);
+    try{
+        let result = await Company.update({
+            "password": data.password,
+            "company_name": data.company_name,
+            "company_contact": data.company_contact,
+            "company_manager": data.company_manager,
+            "company_address": data.company_address,
+            "activity_category": data.activity_category
+        
+        },{
+            where: {"id": data.company_id},
+        });
+        console.log(result);
+
+        if(result==1){
+            res.send({
+                "success": true,
+                "message": "업체 회원 정보 수정 성공"
+            });
+        }else{
+            res.send({
+                "success": false,
+                "message": "수정 실패"
+            });
+        }
+        
+    } catch(err){
+        res.send({
+            "success": false,
+            "message": err
+        });
+    }
+};
+
 exports.login = async (req,res)=>{
     let data = req.body;
     let result= await Company.findOne({

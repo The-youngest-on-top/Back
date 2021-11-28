@@ -4,6 +4,7 @@ const {activity_upload} = require('../models/multer');
 const controller = require('../controllers/activity_controller');
 
 router.post('/activity',activity_upload.array("activity_images"),controller.add_activity);
+router.post('/activity/modify',controller.modify_activity);
 router.get('/activities', controller.get_activities);
 router.get('/activity', controller.get_activity);
 router.get('/activity/location/:location', controller.get_location_activities);

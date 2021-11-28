@@ -49,6 +49,46 @@ exports.add_activity = async (req,res)=> {
     
 };
 
+exports.modify_activity = async (req,res)=>{
+    let data = req.body;
+    console.log(data);
+    // let images = req.files;
+    try{
+        // let license_image = images[0].location
+        let result = await Activity.update({
+            "activity_category": data.activity_category,
+            "activity_name": data.activity_name,
+            "activity_price": data.activity_price,
+            "location": data.location,
+            "address": data.address,
+            // "license_image": license_image,
+            
+        
+        },{
+            where: {"id": data.activity_id, "company_id": data.company_id},
+        });
+        console.log(result);
+
+        if(result==1){
+            res.send({
+                "success": true,
+                "message": "activity 수정 성공"
+            });
+        }else{
+            res.send({
+                "success": false,
+                "message": "해당 액티비티의 작성자가 아님"
+            });
+        }
+        
+    } catch(err){
+        res.send({
+            "success": false,
+            "message": err
+        });
+    }
+};
+
 exports.add_time = async (req,res) => {
     let data = req.body;
     let activity = await Activity.findOne({
@@ -71,9 +111,8 @@ exports.get_activities = async (req,res) =>{
                     required:false
                 }
             ],
-            attributes: ["id","activity_category", "activity_name", "activity_price", "location", "created_at"],
+            attributes: ["activity_category", "activity_name", "activity_price", "location", "company_id"],
         })
-        console.log(activities.created_at);
         console.log(activities);
         res.send({
             "success": true,
@@ -88,8 +127,8 @@ exports.get_activities = async (req,res) =>{
 }
 
 exports.get_activity = async (req,res)=>{
-    data = url.parse(req.url, true).query;
-    let activity_id  = data.id;
+    query_data = url.parse(req.url, true).query;
+    let activity_id  = query_data.id;
     try{    
         let activity = await Activity.findOne({
             include: [
@@ -104,7 +143,7 @@ exports.get_activity = async (req,res)=>{
                     required:false
                 }
             ],
-            attributes: ["id","activity_category", "activity_name", "activity_price", "location", "created_at"],
+            attributes: ["id","activity_category", "activity_name", "activity_price", "location", "company_id"],
             where: {
                 "id": activity_id,
             }
@@ -140,7 +179,7 @@ exports.get_location_activities = async (req,res)=>{
                     required:false
                 }
             ],
-            attributes: ["id","activity_category", "activity_name", "activity_price", "location", "created_at"],
+            attributes: ["id","activity_category", "activity_name", "activity_price", "location"],
             where: {
                 "location": location 
             }
@@ -183,13 +222,12 @@ exports.get_category_activities = async(req,res)=>{
                     required:false
                 }
             ],
-            attributes: ["id","activity_category", "activity_name", "activity_price", "location",  "created_at"],
+            attributes: ["activity_category", "activity_name", "activity_price", "location"],
             where: {
                 "activity_category": category 
             }
         });
         if(activity.length){
-           
             res.send({
                 "success": true,
                 "data": activity
@@ -211,22 +249,17 @@ exports.get_category_activities = async(req,res)=>{
 }
 
 exports.search_activities = async (req,res)=>{
-    data = url.parse(req.url,ture).query;
-    let data = data.keyword;
+    query_data = url.parse(req.url,ture).query;
+    let data = query_data.keyword;
     try{
         let activity = await Activity.findAll({
             include: [
-                {
-                    model: Activity_image,
-                    attributes: ["image_url"],
-                    required:false
-                },
                 { 
                     model: Company,  
                     attributes: ["company_name"] },
                 
               ],
-            attributes: ["id","activity_category", "activity_name", "activity_price", "location", "address", "created_at"],
+            attributes: ["activity_category", "activity_name", "activity_price", "location", "address", "company_id"],
             where: {
                 [Op.or]: [{ "location": data }, {"activity_category": data }],
                 
@@ -240,14 +273,9 @@ exports.search_activities = async (req,res)=>{
                         "company_name": data
                     },
                     attributes: ["company_name"] },
-                    {
-                        model: Activity_image,
-                        attributes: ["image_url"],
-                        required:false
-                    },
                   
                 ],
-                attributes: ["activity_category", "activity_name", "activity_price", "location", "address"],
+                attributes: ["activity_category", "activity_name", "activity_price", "location", "address", "company_id"],
             });
             if(company.length){
                 res.send({
@@ -339,8 +367,8 @@ exports.set_activity_times = async(req,res) =>{
 }
 
 exports.get_activity_times = async(req,res)=>{
-    data = url.parse(req.url, true).query
-    let activity_id = data.id;
+    query_data = url.parse(req.url, true).query
+    let activity_id = query_data.id;
     let times;
     try{
         times = await Activity_time.findAll({
