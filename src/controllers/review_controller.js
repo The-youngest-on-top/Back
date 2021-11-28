@@ -94,3 +94,63 @@ exports.get_star_avg = async (req,res)=>{
         });
     }
 };
+
+exports.modify_review = async (req,res)=>{
+    let data = req.body;
+    
+    try{
+        let result = await Review.update({
+            "content": data.content,
+            "star": data.star,
+            
+        },{
+            where: {"id": data.review_id, "user_id": data.user_id},
+        });
+        console.log(result);
+
+        if(result==1){
+            res.send({
+                "success": true,
+                "message": "review 수정 성공"
+            });
+        }else{
+            res.send({
+                "success": false,
+                "message": "해당 리뷰의 작성자가 아님"
+            });
+        }
+        
+    } catch(err){
+        res.send({
+            "success": false,
+            "message": err
+        });
+    }
+};
+
+exports.delete_review = async (req,res)=>{
+    let data = req.body;
+    
+    try{
+        let result = await Review.destroy({
+            where: {"id": data.review_id, "user_id": data.user_id}, 
+         });
+        
+         if(result==1){
+            res.send({
+                "success": true,
+                "message": "review 삭제 성공"
+            });
+        }else{
+            res.send({
+                "success": false,
+                "message": "해당 리뷰의 작성자가 아님"
+            });
+        }
+    } catch(err){
+        res.send({
+            "success": false,
+            "message": err
+        });
+    }
+};
