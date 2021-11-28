@@ -3,7 +3,7 @@ const controller = require('../controllers/heart_controller');
 const router = express.Router();
 
 router.post('/heart',controller.add_heart);
-router.get('/heart', controller.get_hearts);
+router.get('/hearts', controller.get_hearts);
 router.delete('/heart', controller.delete_heart);
 
 
