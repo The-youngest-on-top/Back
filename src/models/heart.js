@@ -24,8 +24,14 @@ class Heart extends Sequelize.Model {
         });
     }
     static associate(db) {
-        db.Heart.belongsTo(db.User);
-        db.Heart.belongsTo(db.Activity);
+        db.Heart.belongsTo(db.User,{
+            foreignKey: "user_id",
+            onDelete: "cascade"
+        });
+        db.Heart.belongsTo(db.Activity,{
+            foreignKey: "activity_id",
+            onDelete: "cascade"
+        });
     }
 };
 

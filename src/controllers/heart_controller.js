@@ -5,17 +5,27 @@ const path = require('path');
 
 
 
-exports.regist_heart = async (req,res) =>{
-    let data = req.body;
-
-    console.log("확인"+data.user_id)
-    await Heart.create({
-        "activity_id":data.activity_id,
-        "user_id": data.user_id
-    }); 
-    res.send(`${data.user_id} 찜 저장 성공`);
+exports.add_heart = async (req,res) =>{
+    let {user_id, activity_id} = req.body;
+    try{
+        await Heart.create({
+            "activity_id":activity_id,
+            "user_id": user_id
+        }); 
+        res.send({
+            "success": true,
+            "message": `찜 저장 성공`
+        });
+    } catch(err){
+        console.log(err);
+        res.send({
+            "success": false,
+            "message": err.message
+        });
+    }
+    
 };
-exports.get_heart = async (req,res)=>{
+exports.get_hearts = async (req,res)=>{
     let user_id = req.body.user_id;
     console.log(user_id);
     let result= await Heart.findAll({
