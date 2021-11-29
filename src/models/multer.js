@@ -52,3 +52,13 @@ exports.travel_upload = multer({
     },
   })
 }, 'NONE');
+
+exports.review_upload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: 'extreme-cbnu',
+    key: (req, file, cb) => {
+      cb(null, `review_images/${Date.now()}_${path.basename(file.originalname)}`);
+    },
+  })
+}, 'NONE');
