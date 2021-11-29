@@ -55,7 +55,7 @@ router.get('/weather', async(req,res)=>{
             let nxy = await xy_converter.xy_conv("toXY",short_fcst_location[location].lat,short_fcst_location[location].lng);
             let fcstdate = `${edt.getFullYear()}${pad(edt.getMonth()+1)}${pad(edt.getDate())}`
             console.log(fcstdate);
-            weather = await getForecast(nxy.x,nxy.y,fcstdate);
+            weather = await getForecast(nxy.x,nxy.y);
         }
         else if(dateDiff<11){
             let hour = sdt.getHours();
@@ -102,6 +102,27 @@ const getBaseDateTime = ({ minutes = 0, provide = 40 } = {}, dt = Date.now()) =>
     }
 }
 
+const getShort = async (nx,ny) => {
+    let {base_date, base_time} = await getBaseDateTime(0,180)
+    var uri = 'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst';
+    var queryParams = '?' + encodeURIComponent('serviceKey') +`=${process.env.short_service_key}`; /* Service Key*/
+    queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1'); /* */
+    queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('1000'); /* */
+    queryParams += '&' + encodeURIComponent('dataType') + '=' + encodeURIComponent('JSON'); /* */
+    queryParams += '&' + encodeURIComponent('base_date') + '=' + encodeURIComponent(`${base_date}`); /* */
+    queryParams += '&' + encodeURIComponent('base_time') + '=' + encodeURIComponent(`${base_time}`); /* */
+    queryParams += '&' + encodeURIComponent('nx') + '=' + encodeURIComponent(`${nx}`); /* */
+    queryParams += '&' + encodeURIComponent('ny') + '=' + encodeURIComponent(`${ny}`); /* */
+    console.log(uri+queryParams);
+    const { data } = await Axios.get(uri+queryParams);
+    if (!data.response) throw Error('단기예보 응답값 없음')
+    //console.log(data.response.body.items.item);
+    let state = getState(data.response.body.items.item);
+    console.log(state);
+    return state;
+}
+
+
 const getWeahterNow = async (nx, ny) => {
     let {base_date, base_time} = await getBaseDateTime()
     let tem, wsd,rain;
@@ -125,11 +146,8 @@ const getWeahterNow = async (nx, ny) => {
     return {"date": base_date, "time": base_time, "tem": tem, "wsd": wsd, "rain":rain};
 }
 
-const getForecast = async (nx, ny, fcstdate = 0) => {
+const getForecast = async (nx, ny) => {
     let {base_date, base_time} = await getBaseDateTime()
-    if(fcstdate==0){
-        fcstdate = base_date;
-    }
     var uri = 'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst';
     var queryParams = '?' + encodeURIComponent('serviceKey') +`=${process.env.short_service_key}`; /* Service Key*/
     queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1'); /* */
@@ -143,7 +161,7 @@ const getForecast = async (nx, ny, fcstdate = 0) => {
     const { data } = await Axios.get(uri+queryParams);
     if (!data.response) throw Error('getUltraSrtFcst 응답값 없음')
     //console.log(data.response.body.items.item);
-    let state = getState(data.response.body.items.item, fcstdate);
+    let state = getState(data.response.body.items.item);
     console.log(state);
     return state;
 }
@@ -165,8 +183,8 @@ const weatherState = (ptyCode, skyCode) => {
 const getWeather = async (x, y) => {
     const { getWeahterNow, getForecast } = cachedFn
     const [weather, forecast] = await Promise.all([
-      getWeahterNow(x, y),
-      getForecast(x, y),
+        getWeahterNow(x, y),
+        getForecast(x, y),
     ])
     return {
         "date": weather.date,
@@ -176,16 +194,15 @@ const getWeather = async (x, y) => {
         "rain": weather.rain,
         "state": forecast 
     }
-   
 }
 
-const getState = (data, fcstdate) => {
+const getState = (data, fcsdate=0) => {
     let pty, sky, state;
     let pty_flag=0, sky_flag=0;
     data.forEach(element => {
         console.log(`fcstdate: ${fcstdate}  element: ${element.fcstDate}`);
         if(fcstdate==element.fcstDate){
-                if(element.category=="PTY"&&pty_flag==0) {
+                if(element.category=="PTY" && pty_flag==0) {
                     pty = element.fcstValue;
                     console.log(pty);
                 }
