@@ -36,7 +36,7 @@ exports.get_review = async (req,res)=>{
             include: [
                 {
                     model: User,
-                    attributes: ["nickname"],
+                    attributes: ["nickname", "profile_image"],
                     required:false
                 }
             ],
@@ -164,18 +164,5 @@ exports.delete_review = async (req,res)=>{
 };
 
 exports.get_review_images = async (req,res)=>{
-    let {travel_name} = req.body;
-    let travel = await Review.findOne({
-        where: {
-            "travel_name": travel_name 
-        }
-    });
-    let images = await Travel_image.findAll({
-        attributes:["image_url"],
-        where: {
-            "travel_id": travel.id
-        }
-    })
-    console.log(images);
-    res.send(images);
+   
 }
