@@ -249,7 +249,7 @@ exports.get_category_activities = async(req,res)=>{
 }
 
 exports.search_activities = async (req,res)=>{
-    query_data = url.parse(req.url,ture).query;
+    query_data = url.parse(req.url,true).query;
     let data = query_data.keyword;
     try{
         let activity = await Activity.findAll({
