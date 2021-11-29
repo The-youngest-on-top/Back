@@ -109,9 +109,14 @@ exports.get_activities = async (req,res) =>{
                     model: Activity_image,
                     attributes: ["image_url"],
                     required:false
+                },
+                {
+                    model: Company,
+                    attributes: ["company_name"],
+                    required:false
                 }
             ],
-            attributes: ["activity_category", "activity_name", "activity_price", "location", "company_id"],
+            attributes: ["id","activity_category", "activity_name", "activity_price", "location", "created_at"],
         })
         console.log(activities);
         res.send({
@@ -143,7 +148,7 @@ exports.get_activity = async (req,res)=>{
                     required:false
                 }
             ],
-            attributes: ["id","activity_category", "activity_name", "activity_price", "location", "company_id"],
+            attributes: ["id","activity_category", "activity_name", "activity_price", "location", "created_at"],
             where: {
                 "id": activity_id,
             }
@@ -179,7 +184,7 @@ exports.get_location_activities = async (req,res)=>{
                     required:false
                 }
             ],
-            attributes: ["id","activity_category", "activity_name", "activity_price", "location"],
+            attributes: ["id","activity_category", "activity_name", "activity_price", "location", "created_at"],
             where: {
                 "location": location 
             }
@@ -222,7 +227,7 @@ exports.get_category_activities = async(req,res)=>{
                     required:false
                 }
             ],
-            attributes: ["activity_category", "activity_name", "activity_price", "location"],
+            attributes: ["id","activity_category", "activity_name", "activity_price", "location", "created_at"],
             where: {
                 "activity_category": category 
             }
@@ -254,12 +259,17 @@ exports.search_activities = async (req,res)=>{
     try{
         let activity = await Activity.findAll({
             include: [
+                {
+                    model: Activity_image,
+                    attributes: ["image_url"],
+                    required:false
+                },
                 { 
                     model: Company,  
-                    attributes: ["company_name"] },
-                
+                    attributes: ["company_name"] 
+                },
               ],
-            attributes: ["activity_category", "activity_name", "activity_price", "location", "address", "company_id"],
+              attributes: ["id","activity_category", "activity_name", "activity_price", "location", "created_at"],
             where: {
                 [Op.or]: [{ "location": data }, {"activity_category": data }],
                 
@@ -268,14 +278,20 @@ exports.search_activities = async (req,res)=>{
         console.log(activity);
             const company = await Activity.findAll({
                 include: [
-                  { model: Company,  
-                    where:{
-                        "company_name": data
+                    {
+                        model: Activity_image,
+                        attributes: ["image_url"],
+                        required:false
                     },
-                    attributes: ["company_name"] },
-                  
+                    { 
+                        model: Company,  
+                        where:{
+                            "company_name": data
+                        },
+                        attributes: ["company_name"] 
+                    }
                 ],
-                attributes: ["activity_category", "activity_name", "activity_price", "location", "address", "company_id"],
+                attributes: ["id","activity_category", "activity_name", "activity_price", "location", "created_at"],
             });
             if(company.length){
                 res.send({
