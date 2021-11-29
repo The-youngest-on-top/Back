@@ -1,11 +1,12 @@
 const Review = require('../models/review');
-// const Review_image = require('../models/review_image');
+const Review_image = require('../models/review_image');
 const User = require('../models/user');
 const Activity = require('../models/activity');
 const url = require('url');
 const { Op } = require('sequelize');
 
 exports.add_review = async (req,res)=> {
+    let images = req.files;
     let data = req.body;
     try{
         await Review.create({
@@ -15,6 +16,21 @@ exports.add_review = async (req,res)=> {
             "activity_id": data.activity_id,
             
         });
+        let review = await Review.findOne({
+            attributes: ['id'],
+            where: {
+                "content": data.content
+            }
+        })
+        console.log(review.id);
+        for(let i = 0; i<images.length; i++){
+            let review_image = `${images[i].location}`;
+            await Review_image.create({
+                "image_url": review_image,
+                "review_id": review.id
+            })
+            console.log(images[i].filename);
+        }
     res.send({
         "success": true,
         "message": "review 저장 성공"
@@ -25,7 +41,6 @@ exports.add_review = async (req,res)=> {
             "message": err
         });
     }
-    
 };
 
 exports.get_review = async (req,res)=>{
@@ -162,7 +177,3 @@ exports.delete_review = async (req,res)=>{
         });
     }
 };
-
-exports.get_review_images = async (req,res)=>{
-   
-}
