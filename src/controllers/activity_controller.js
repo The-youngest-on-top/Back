@@ -254,10 +254,15 @@ exports.search_activities = async (req,res)=>{
     try{
         let activity = await Activity.findAll({
             include: [
+                {
+                    model: Activity_image,
+                    attributes: ["image_url"],
+                    required:false
+                },
                 { 
                     model: Company,  
-                    attributes: ["company_name"] },
-                
+                    attributes: ["company_name"] 
+                },
               ],
             attributes: ["activity_category", "activity_name", "activity_price", "location", "address", "company_id"],
             where: {
@@ -268,12 +273,18 @@ exports.search_activities = async (req,res)=>{
         console.log(activity);
             const company = await Activity.findAll({
                 include: [
-                  { model: Company,  
-                    where:{
-                        "company_name": data
+                    {
+                        model: Activity_image,
+                        attributes: ["image_url"],
+                        required:false
                     },
-                    attributes: ["company_name"] },
-                  
+                    { 
+                        model: Company,  
+                        where:{
+                            "company_name": data
+                        },
+                        attributes: ["company_name"] 
+                    }
                 ],
                 attributes: ["activity_category", "activity_name", "activity_price", "location", "address", "company_id"],
             });
