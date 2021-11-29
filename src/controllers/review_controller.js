@@ -1,4 +1,5 @@
 const Review = require('../models/review');
+// const Review_image = require('../models/review_image');
 const User = require('../models/user');
 const Activity = require('../models/activity');
 const url = require('url');
@@ -32,10 +33,17 @@ exports.get_review = async (req,res)=>{
     let activity_id = data.activity_id;
     try{
         let result= await Review.findAll({
+            include: [
+                {
+                    model: User,
+                    attributes: ["nickname"],
+                    required:false
+                }
+            ],
             where:{
                 "activity_id": activity_id
             },
-            attributes: ["content", "star", "user_id", "activity_id"],
+            attributes: ["id", "content", "star", "user_id", "activity_id"],
         })
         console.log(result);
         if(result.length){
@@ -154,3 +162,20 @@ exports.delete_review = async (req,res)=>{
         });
     }
 };
+
+exports.get_review_images = async (req,res)=>{
+    let {travel_name} = req.body;
+    let travel = await Review.findOne({
+        where: {
+            "travel_name": travel_name 
+        }
+    });
+    let images = await Travel_image.findAll({
+        attributes:["image_url"],
+        where: {
+            "travel_id": travel.id
+        }
+    })
+    console.log(images);
+    res.send(images);
+}
