@@ -1,24 +1,38 @@
 {
   "development": {
     "username": "root",
-    "password": "1234",
+    "password": "qnrqjrm03",
     "database": "extreme",
     "host": "localhost",
-    "port": 3305,
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "dialectOptions": {
+      "charset": "utf8mb4",
+      "dateStrings": true,
+      "typeCast": true
+  }
   },
   "test": {
     "username": "bb67c3699a7c6c",
     "password": "ec3a6df2",
     "database": "heroku_7ea1420c2c87088",
     "host": "us-cdbr-east-04.cleardb.com",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "dialectOptions": {
+      "charset": "utf8mb4",
+      "dateStrings": true,
+      "typeCast": true
+    }
   },
   "production": {
     "username": "root",
     "password": null,
     "database": "database_production",
     "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "dialectOptions": {
+      "charset": "utf8mb4",
+      "dateStrings": true,
+      "typeCast": true
+    }
   }
 }

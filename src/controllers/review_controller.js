@@ -77,7 +77,7 @@ exports.get_review = async (req,res)=>{
             where:{
                 "activity_id": activity_id
             },
-            attributes: ["id", "content", "star", "user_id", "activity_id"],
+            attributes: ["id", "content", "star", "user_id", "activity_id", "created_at"],
         })
         console.log(result);
         if(result.length){
