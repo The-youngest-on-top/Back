@@ -11,7 +11,7 @@ router.get('/activity/location/:location', controller.get_location_activities);
 router.get('/activity/category/:category', controller.get_category_activities);
 router.get('/activity/search', controller.search_activities);
 router.get('/activity/images', controller.get_activity_images);
-router.post('/activity/images',activity_upload.array("activity_images"), controller.get_activity_images);
+router.post('/activity/images',activity_upload.array("activity_images"), controller.add_activity_image);
 router.delete('/activity', controller.delete_activity);
 router.post('/activity/times', controller.set_activity_times);
 router.get('/activity/times', controller.get_activity_times);
