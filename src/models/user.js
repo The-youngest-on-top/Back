@@ -59,6 +59,7 @@ class User extends Sequelize.Model {
             onDelete: "cascade"
         });
         db.User.hasMany(db.Reservation)
+        db.User.hasOne(db.User_account);
     }
 };
 
