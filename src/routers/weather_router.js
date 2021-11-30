@@ -49,15 +49,45 @@ router.get('/weather', async(req,res)=>{
     var edt = new Date(input.year,input.month-1, input.day);
     var dateDiff = Math.ceil((edt.getTime()-sdt.getTime())/(1000*3600*24));
     let hour = sdt.getHours();
-    console.log(sdt);
-    console.log(edt);
     try{
         if(dateDiff<3){
             let nxy = await xy_converter.xy_conv("toXY",short_fcst_location[location].lat,short_fcst_location[location].lng);
             let fcstdate = `${edt.getFullYear()}${pad(edt.getMonth()+1)}${pad(edt.getDate())}`;
-            
-            console.log(fcstdate);
-            weather = await getShort(nxy.x,nxy.y,fcstdate);
+            let base_date, base_time;
+            if (dateDiff<0){
+                throw Error('해당 날짜의 날씨 정보가 없습니다.')
+            }
+            if(hour<3){
+                base_date = `${sdt.getFullYear()}${pad(sdt.getMonth()+1)}${pad(sdt.getDate()-1)}`
+                base_time = '2300'
+            }else if (hour <6){
+                base_date = `${sdt.getFullYear()}${pad(sdt.getMonth()+1)}${pad(sdt.getDate())}`
+                base_time = '0200'
+        
+            } else if(hour <9){
+                base_date = `${sdt.getFullYear()}${pad(sdt.getMonth()+1)}${pad(sdt.getDate())}`
+                base_time = '0500'
+        
+            }else if(hour < 12){
+                base_date = `${sdt.getFullYear()}${pad(sdt.getMonth()+1)}${pad(sdt.getDate())}`
+                base_time = '0800'
+        
+            }else if(hour <15){
+                base_date = `${sdt.getFullYear()}${pad(sdt.getMonth()+1)}${pad(sdt.getDate())}`
+                base_time = '1100'
+            }else if (hour< 18){
+                base_date = `${sdt.getFullYear()}${pad(sdt.getMonth()+1)}${pad(sdt.getDate())}`
+                base_time = '1400'
+        
+            }else if (hour <21){
+                base_date = `${sdt.getFullYear()}${pad(sdt.getMonth()+1)}${pad(sdt.getDate())}`
+                base_time = '1700'
+        
+            }else if (hour <24){
+                base_date = `${sdt.getFullYear()}${pad(sdt.getMonth()+1)}${pad(sdt.getDate())}`
+                base_time = '2000'
+            }
+            weather = await getShort(nxy.x,nxy.y,fcstdate,base_date,base_time);
         }
         else if(dateDiff<11){
             let tmfc
@@ -80,10 +110,8 @@ router.get('/weather', async(req,res)=>{
             throw Error('해당 날짜의 날씨 정보가 없습니다.')
         }
         res.send({
-            "basedate": sdt.getFullYear()+pad(sdt.getMonth()+1)+pad(sdt.getDate()),
-            "time": sdt.getHours(),
+            "success": true,
             "weather": weather,
-            "날짜 차이": dateDiff
         });
     }catch(err){
         console.log(err);
@@ -103,8 +131,9 @@ const getBaseDateTime = ({ minutes = 0, provide = 40 } = {}, dt = Date.now()) =>
     }
 }
 
-const getShort = async (nx,ny, fcstdate) => {
-    let {base_date, base_time} = await getBaseDateTime()
+const getShort = async (nx,ny, fcstdate,base_date, base_time) => {
+    
+    console.log(`base_date: ${base_date}   base_time:${base_time}`);
     var uri = 'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst';
     var queryParams = '?' + encodeURIComponent('serviceKey') +`=${process.env.short_service_key}`; /* Service Key*/
     queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1'); /* */
@@ -272,28 +301,17 @@ const getMidForecast = async(tmfc, location, dateDiff, hour) => {
                 }
                 break;
             case 8:
-                if(hour<12){
-                    weather = element.wf8Am;
-                }else {
-                    weather = element.wf8Pm;
-                }
+                weather = element.wf8;
+                
                 break;
             case 9:
-                if(hour<12){
-                    weather = element.wf9Am;
-                }else {
-                    weather = element.wf9Pm;
-                }
+                weather = element.wf9;
                 break;
             case 10:
-                if(hour<12){
-                    weather = element.wf10Am;
-                }else {
-                    weather = element.wf10Pm;
-                }
+                weather = element.wf10;
                 break;
             default:
-                break;
+                throw Error("예보가 없습니다.")
         }
     });
     return weather;
