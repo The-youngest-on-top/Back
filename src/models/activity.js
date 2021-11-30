@@ -23,6 +23,10 @@ class Activity extends Sequelize.Model {
                 type: Sequelize.STRING(45),
                 allowNull: false
             },
+            star:{
+                type: Sequelize.FLOAT,
+                defaultValue: 0
+            },
             license_image:{
                 type: Sequelize.STRING(100),
                 allowNull: false
