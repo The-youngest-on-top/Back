@@ -4,7 +4,7 @@ const Company = require('../models/company');
 const Activity_time = require('../models/activity_time');
 var url = require('url');
 const { Op } = require('sequelize');
-const { Review } = require('../models');
+const  Review  = require('../models/review');
 
 exports.add_activity = async (req,res)=> {
     let images = req.files;
@@ -116,7 +116,7 @@ exports.get_activities = async (req,res) =>{
                     required:false
                 }
             ],
-            attributes: ["id","activity_category", "activity_name", "activity_price", "location", "created_at"],
+            attributes: ["id","activity_category", "activity_name", "activity_price", "location", "star","created_at"],
         })
         console.log(activities);
         res.send({
@@ -148,7 +148,7 @@ exports.get_activity = async (req,res)=>{
                     required:false
                 }
             ],
-            attributes: ["id","activity_category", "activity_name", "activity_price", "location", "created_at"],
+            attributes: ["id","activity_category", "activity_name", "activity_price", "location", "star","created_at"],
             where: {
                 "id": activity_id,
             }
@@ -184,7 +184,7 @@ exports.get_location_activities = async (req,res)=>{
                     required:false
                 }
             ],
-            attributes: ["id","activity_category", "activity_name", "activity_price", "location", "created_at"],
+            attributes: ["id","activity_category", "activity_name", "activity_price", "location", "star","created_at"],
             where: {
                 "location": location 
             }
@@ -227,7 +227,7 @@ exports.get_category_activities = async(req,res)=>{
                     required:false
                 }
             ],
-            attributes: ["id","activity_category", "activity_name", "activity_price", "location", "created_at"],
+            attributes: ["id","activity_category", "activity_name", "activity_price", "location", "star","created_at"],
             where: {
                 "activity_category": category 
             }
@@ -269,7 +269,7 @@ exports.search_activities = async (req,res)=>{
                     attributes: ["company_name"] 
                 },
               ],
-              attributes: ["id","activity_category", "activity_name", "activity_price", "location", "created_at"],
+              attributes: ["id","activity_category", "activity_name", "activity_price", "location", "star","created_at"],
             where: {
                 [Op.or]: [{ "location": data }, {"activity_category": data }],
                 
@@ -291,7 +291,7 @@ exports.search_activities = async (req,res)=>{
                         attributes: ["company_name"] 
                     }
                 ],
-                attributes: ["id","activity_category", "activity_name", "activity_price", "location", "created_at"],
+                attributes: ["id","activity_category", "activity_name", "activity_price", "location", "star","created_at"],
             });
             if(company.length){
                 res.send({

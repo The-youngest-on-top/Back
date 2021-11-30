@@ -8,6 +8,7 @@ const { Op } = require('sequelize');
 exports.add_review = async (req,res)=> {
     let images = req.files;
     let data = req.body;
+    let sum = 0;
     try{
         await Review.create({
             "content": data.content,
@@ -15,6 +16,24 @@ exports.add_review = async (req,res)=> {
             "user_id": data.user_id,
             "activity_id": data.activity_id,
             
+        });
+        let result= await Review.findAll({
+            where:{
+                "activity_id": data.activity_id
+            },
+            attributes: ["star"],
+        })
+        result.forEach(element => {
+            sum+= element.star;
+            console.log(element.star);
+        });
+        const avg = sum/result.length;
+        await Activity.update({
+            star: avg
+        },{
+            where:{
+                id: data.activity_id
+            }
         });
         let review = await Review.findOne({
             attributes: ['id'],
@@ -38,7 +57,7 @@ exports.add_review = async (req,res)=> {
     } catch(err){
         res.send({
             "success": false,
-            "message": err
+            "message": err.message
         });
     }
 };
