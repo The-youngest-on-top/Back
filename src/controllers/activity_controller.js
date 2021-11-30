@@ -338,6 +338,30 @@ exports.get_activity_images = async (req,res)=>{
 
 }
 
+exports.add_activity_image = async (req,res)=>{
+    let images = req.files;
+    let {activity_id} = req.body;
+    try{
+        for(let i = 0; i<images.length; i++){
+            let activity_image = `${images[i].location}`;
+            await Activity_image.create({
+                "image_url": activity_image,
+                "activity_id": activity_id
+            })
+            console.log(images[i].filename);
+        }
+        res.send({
+            "success": true,
+            "message": "activity 저장 성공"
+        });
+    } catch(err){
+        res.send({
+            "success": false,
+            "message": err
+        });
+    }
+}
+
 exports.delete_activity = async (req,res)=>{
     let {activity_name} = req.body;
     try{
