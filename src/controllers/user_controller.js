@@ -79,6 +79,13 @@ exports.get_user = async (req,res)=>{
     console.log(user_id);
     try{
         let result= await User.findOne({
+            include:[
+                {
+                    model: User_account,
+                    attributes: ["account_number", "bank_name"],
+                    required:false
+                },
+            ],
             attributes: ["id", "password", "profile_image", "nickname","name", "phone_number", "birthday", "email"],
             where:{
                 id : user_id
