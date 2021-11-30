@@ -387,8 +387,8 @@ exports.delete_activity = async (req,res)=>{
 exports.set_activity_times = async(req,res) =>{
     let {activity_id, times} = req.body;
     try{
-        await times.forEach(time => {
-            Activity_time.create({
+        times.forEach(time => {
+            await Activity_time.create({
                 "date": time.date,
                 "hour": time.hour,
                 "activity_id": activity_id
