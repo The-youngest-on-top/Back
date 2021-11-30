@@ -1,4 +1,5 @@
 const User  = require('../models/user');
+const User_account = require('../models/user_account');
 const path = require('path');
 
 exports.signup_user = async (req,res) =>{
@@ -51,7 +52,14 @@ exports.signup_user = async (req,res) =>{
             "name": data.name,
             "phone_number":data.phone_number,
             "birthday":data.birthday,
-            "email": data.email
+            "email": data.email,
+            "account_number": data.account_number,
+            "bank_name": data.bank_name
+        })
+        await User_account.create({
+            "account_number": data.account_number,
+            "bank_name": data.bank_name,
+            "user_id": data.user_id
         })
         res.send({
             "success": true,
@@ -61,7 +69,7 @@ exports.signup_user = async (req,res) =>{
     }catch(err){
         res.send({
             "success": false,
-            "message": err
+            "message": err.message
         })
     }
 };

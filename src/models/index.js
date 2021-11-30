@@ -3,6 +3,7 @@
 //models/index.js
 const Sequelize = require('sequelize');
 const User = require('./user');
+const User_account = require('./user_account');
 const Coupon = require('./coupon');
 //const Reserve = require('./reserve');
 const Heart = require('./heart');
@@ -25,6 +26,7 @@ const sequelize = new Sequelize(config.database, config.username, config.passwor
 
 db.sequelize = sequelize;
 db.User = User;
+db.User_account = User_account;
 db.Coupon = Coupon;
 //db.Reserve = Reserve;
 db.Heart = Heart;
@@ -40,6 +42,7 @@ db.Travel_image = Travel_image;
 db.Reservation = Reservation;
 
 User.init(sequelize);
+User_account.init(sequelize);
 Coupon.init(sequelize);
 Heart.init(sequelize);
 Company.init(sequelize);
@@ -54,6 +57,7 @@ Travel_image.init(sequelize);
 Reservation.init(sequelize);
 
 User.associate(db);
+User_account.associate(db);
 Coupon.associate(db);
 Reservation.associate(db);
 Heart.associate(db);
