@@ -147,7 +147,7 @@ exports.get_carts = async(req,res) => {
                             required:false
                         }
                     ],
-                    attributes: ["id", "activity_name"]
+                    attributes: ["id", "activity_name", "activity_price"]
                 }
             ],
             attributes: ["id", "payment","people"],
@@ -199,7 +199,7 @@ exports.get_activity_reservations = async(req,res) => {
                             required:false
                         }
                     ],
-                    attributes: ["id", "activity_name"]
+                    attributes: ["id", "activity_name","activity_price"]
                 }
             ],
             attributes: ["id", "payment","people"],
