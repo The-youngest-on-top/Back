@@ -1,8 +1,9 @@
 {
   "development": {
     "username": "root",
-    "password": "qnrqjrm03",
+    "password": "1234",
     "database": "extreme",
+    "port": 3305,
     "host": "localhost",
     "dialect": "mysql",
     "dialectOptions": {

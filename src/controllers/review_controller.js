@@ -6,7 +6,6 @@ const url = require('url');
 const { Op } = require('sequelize');
 
 exports.add_review = async (req,res)=> {
-    let images = req.files;
     let data = req.body;
     let sum = 0;
     try{
