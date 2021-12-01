@@ -34,21 +34,6 @@ exports.add_review = async (req,res)=> {
                 id: data.activity_id
             }
         });
-        let review = await Review.findOne({
-            attributes: ['id'],
-            where: {
-                "content": data.content
-            }
-        })
-        console.log(review.id);
-        for(let i = 0; i<images.length; i++){
-            let review_image = `${images[i].location}`;
-            await Review_image.create({
-                "image_url": review_image,
-                "review_id": review.id
-            })
-            console.log(images[i].filename);
-        }
     res.send({
         "success": true,
         "message": "review 저장 성공"
