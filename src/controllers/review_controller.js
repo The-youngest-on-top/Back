@@ -70,7 +70,7 @@ exports.get_review = async (req,res)=>{
             include: [
                 {
                     model: User,
-                    attributes: ["nickname", "profile_image"],
+                    attributes: ["nickname"],
                     required:false
                 }
             ],
