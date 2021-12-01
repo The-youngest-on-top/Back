@@ -12,5 +12,6 @@ router.get('/reservation/activity',controller.get_activity_reservations);
 
 router.post('/cart',controller.add_cart);
 router.get('/cart',controller.get_carts);
+router.post('/cart/del',controller.del_cart);
 
 module.exports = router;

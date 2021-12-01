@@ -173,6 +173,28 @@ exports.get_carts = async(req,res) => {
             "message": err
         });
     }
+} 
+
+exports.del_cart = async(req,res) => {
+    let data = req.body
+    try{
+        await Reservation.destroy({
+            where:{
+                id:data.id,
+                payment_status:false
+            }
+        });
+        res.send({
+            "success": true,
+            "message": "삭제 성공"
+        });
+    } catch(err){
+        console.log(err);
+        res.send({
+            "success": false,
+            "message": err.message
+        });
+    }
 }
 
 exports.get_activity_reservations = async(req,res) => {

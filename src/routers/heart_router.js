@@ -4,7 +4,7 @@ const router = express.Router();
 
 router.post('/heart',controller.add_heart);
 router.get('/hearts', controller.get_hearts);
-router.delete('/heart', controller.delete_heart);
+router.post('/heart/del', controller.delete_heart);
 
 
 

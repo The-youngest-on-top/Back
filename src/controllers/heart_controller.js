@@ -77,15 +77,25 @@ exports.get_hearts = async (req,res)=>{
 };
 
 exports.delete_heart = async (req,res)=>{
-    
     let data = req.body;
-    await Heart.destroy({
-        where:{
-            "activity_id":data.activity_id,
-            "user_id": data.user_id
-        }
-    })
+    try{
+        await Heart.destroy({
+            where:{
+                "activity_id":data.activity_id,
+                "user_id": data.user_id
+            }
+        })  
+        res.send({
+            "success": true,
+            "message": "삭제 성공"
+        });
+    } catch(err){
+        console.log(err);
+        res.send({
+            "success": false,
+            "message": err.message
+        });
+    }
     
-    res.send(`${data.user_id}   삭제`);
     
 };
