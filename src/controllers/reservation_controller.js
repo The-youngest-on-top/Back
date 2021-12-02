@@ -94,7 +94,7 @@ exports.get_orderlist = async(req,res) => {
                             required:false
                         }
                     ],
-                    attributes: ["id", "activity_name"]
+                    attributes: ["id", "activity_name", "activity_price"]
                 }
             ],
             attributes: ["id", "payment","people"],
